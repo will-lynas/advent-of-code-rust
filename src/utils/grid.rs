@@ -95,6 +95,16 @@ impl<T> Grid<T> {
     }
 }
 
+impl<T: Default + Clone> Grid<T> {
+    pub fn new(width: i32, height: i32) -> Self {
+        Self {
+            width,
+            height,
+            body: vec![T::default(); (width * height) as usize],
+        }
+    }
+}
+
 impl<T: PartialEq + Copy> Grid<T> {
     pub fn find(&self, goal: &T) -> Option<Point> {
         self.body

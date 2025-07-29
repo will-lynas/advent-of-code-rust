@@ -83,6 +83,10 @@ impl Point {
     pub fn orthogonal(&self, other: Self) -> bool {
         self.dot(other) == 0
     }
+
+    pub fn between(&self, other: Self) -> impl Iterator<Item = Self> {
+        (self.y..=other.y).flat_map(move |y| (self.x..=other.x).map(move |x| Self::new(x, y)))
+    }
 }
 
 impl Debug for Point {
