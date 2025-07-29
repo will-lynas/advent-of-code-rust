@@ -6,7 +6,6 @@ type Lines = Vec<Vec<i64>>;
 
 pub fn parse(input: &str) -> Lines {
     input
-        .trim()
         .lines()
         .map(StringNumberParsing::signed_nums)
         .collect()

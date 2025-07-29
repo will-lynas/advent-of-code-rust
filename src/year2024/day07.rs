@@ -4,7 +4,6 @@ type Line = (u64, Vec<u64>);
 
 pub fn parse(input: &str) -> Vec<Line> {
     input
-        .trim()
         .lines()
         .map(|line| {
             let (goal, nums) = line.split_once(':').unwrap();

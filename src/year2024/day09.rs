@@ -1,6 +1,5 @@
 pub fn parse(input: &str) -> Vec<u64> {
     input
-        .trim()
         .chars()
         .map(|c| c.to_string().parse().unwrap())
         .collect()

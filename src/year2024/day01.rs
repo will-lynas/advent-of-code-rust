@@ -3,7 +3,7 @@ use std::collections::HashMap;
 type Lists = (Vec<u32>, Vec<u32>);
 
 pub fn parse(input: &str) -> Lists {
-    let lines = input.trim().lines();
+    let lines = input.lines();
     let mut left = Vec::<u32>::new();
     let mut right = Vec::<u32>::new();
     for line in lines {

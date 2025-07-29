@@ -21,7 +21,7 @@ pub struct Grid<T> {
 
 impl Grid<u8> {
     pub fn parse(input: &str) -> Self {
-        let bytes: Vec<_> = input.trim().lines().map(str::as_bytes).collect();
+        let bytes: Vec<_> = input.lines().map(str::as_bytes).collect();
         let height = bytes.len() as i32;
         let width = bytes[0].len() as i32;
         let mut body = Vec::with_capacity((width * height) as usize);
