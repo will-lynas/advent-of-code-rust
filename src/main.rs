@@ -28,6 +28,14 @@ fn main() {
     let solutions: Vec<_> = empty()
         .chain(template_year())
         .chain(year2015())
+        .chain(year2016())
+        .chain(year2017())
+        .chain(year2018())
+        .chain(year2019())
+        .chain(year2020())
+        .chain(year2021())
+        .chain(year2022())
+        .chain(year2023())
         .chain(year2024())
         .filter(|solution| args.year.clone().is_none_or(|y| y == solution.year))
         .filter(|solution| args.day.clone().is_none_or(|d| d == solution.day))
@@ -104,7 +112,57 @@ run!(template_year
 );
 
 run!(year2015
-    day01
+    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
+    day11, day12, day13, day14, day15, day16, day17, day18, day19, day20,
+    day21, day22, day23, day24, day25
+);
+
+run!(year2016
+    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
+    day11, day12, day13, day14, day15, day16, day17, day18, day19, day20,
+    day21, day22, day23, day24, day25
+);
+
+run!(year2017
+    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
+    day11, day12, day13, day14, day15, day16, day17, day18, day19, day20,
+    day21, day22, day23, day24, day25
+);
+
+run!(year2018
+    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
+    day11, day12, day13, day14, day15, day16, day17, day18, day19, day20,
+    day21, day22, day23, day24, day25
+);
+
+run!(year2019
+    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
+    day11, day12, day13, day14, day15, day16, day17, day18, day19, day20,
+    day21, day22, day23, day24, day25
+);
+
+run!(year2020
+    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
+    day11, day12, day13, day14, day15, day16, day17, day18, day19, day20,
+    day21, day22, day23, day24, day25
+);
+
+run!(year2021
+    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
+    day11, day12, day13, day14, day15, day16, day17, day18, day19, day20,
+    day21, day22, day23, day24, day25
+);
+
+run!(year2022
+    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
+    day11, day12, day13, day14, day15, day16, day17, day18, day19, day20,
+    day21, day22, day23, day24, day25
+);
+
+run!(year2023
+    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
+    day11, day12, day13, day14, day15, day16, day17, day18, day19, day20,
+    day21, day22, day23, day24, day25
 );
 
 run!(year2024
