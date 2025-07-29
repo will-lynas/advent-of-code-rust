@@ -3,6 +3,7 @@ name = "advent-of-code"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.85"
+default-run = "advent-of-code"
 
 [dependencies]
 anyhow = "1.0"
@@ -17,3 +18,7 @@ tokio = { version = "1.47.0", features = ["full"] }
 
 [dev-dependencies]
 indoc = "2.0.5"
+
+[[bin]]
+name = "advent-of-code"
+path = "src/main.rs"
