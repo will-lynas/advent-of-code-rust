@@ -9,8 +9,8 @@ pub fn parse(input: &str) -> Input {
     input.into()
 }
 
-pub fn part1(input: &Input) -> usize {
-    let bits = 4 * 5;
+fn find_leading_zeros(input: &str, n: usize) -> usize {
+    let bits = 4 * n;
     let mask = ((1u128 << bits) - 1) << (128 - bits);
     let mut hasher = Md5::new();
     for i in 0.. {
@@ -24,6 +24,10 @@ pub fn part1(input: &Input) -> usize {
     unreachable!()
 }
 
+pub fn part1(input: &Input) -> usize {
+    find_leading_zeros(input, 5)
+}
+
 pub fn part2(input: &Input) -> usize {
-    input.len()
+    find_leading_zeros(input, 6)
 }
