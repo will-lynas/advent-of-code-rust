@@ -30,8 +30,8 @@ The examples given in the text of each problem are used in tests.
 
 - Everything: `cargo bench`
 - Specific year: `cargo bench year2024`
-- Specific day: `cargo bench year2024::day04`
-- Specific part: `cargo bench year2024::day04::part2`
+- Specific day: `cargo bench year2024/day04`
+- Specific part: `cargo bench year2024/day04/part2`
 
 ## Acknowledgments
 

@@ -21,5 +21,5 @@ To add a new day's solution, follow these steps:
 
 1. In `src/lib.rs`, add the day to the `lib!` macro:
 2. In `tests/tests.rs`, add the day to the `test!` macro:
-3. In `benches/benchmarks.rs`, add the day to the `benchmark!` macro:
+3. In `benches/benchmarks.rs`, add the day to the appropriate macros.
 4. In `src/main.rs`, add the day to the `run!` macro:
