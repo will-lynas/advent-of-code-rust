@@ -26,6 +26,11 @@ pub fn part1(input: &Input) -> usize {
         .sum()
 }
 
-pub fn part2(_input: &Input) -> usize {
-    0
+pub fn part2(input: &Input) -> usize {
+    input
+        .iter()
+        .map(|dimensions| {
+            2 * dimensions[0] + 2 * dimensions[1] + dimensions[0] * dimensions[1] * dimensions[2]
+        })
+        .sum()
 }
