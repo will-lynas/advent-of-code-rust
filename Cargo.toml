@@ -11,6 +11,7 @@ clap = { version = "4.5.23", features = ["derive"] }
 dotenv = "0.15"
 gxhash = "3.4.1"
 itertools = "0.13.0"
+itoa = "1.0.15"
 md-5 = "0.10.6"
 num = "0.4.3"
 regex = "1.11.1"

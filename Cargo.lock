@@ -28,6 +28,7 @@ dependencies = [
  "gxhash",
  "indoc",
  "itertools 0.13.0",
+ "itoa",
  "md-5",
  "num",
  "regex",
