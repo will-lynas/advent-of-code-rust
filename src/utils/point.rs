@@ -14,23 +14,6 @@ use std::{
 
 use num::integer::gcd;
 
-pub const ORIGIN: Point = Point::new(0, 0);
-
-pub const UP: Point = Point::new(0, -1);
-pub const DOWN: Point = Point::new(0, 1);
-pub const LEFT: Point = Point::new(-1, 0);
-pub const RIGHT: Point = Point::new(1, 0);
-
-pub const UP_LEFT: Point = Point::new(-1, -1);
-pub const UP_RIGHT: Point = Point::new(1, -1);
-pub const DOWN_RIGHT: Point = Point::new(1, 1);
-pub const DOWN_LEFT: Point = Point::new(-1, 1);
-
-pub const ORTHOGONALS: [Point; 4] = [UP, RIGHT, DOWN, LEFT];
-pub const DIRS: [Point; 8] = [
-    UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT,
-];
-
 #[derive(PartialOrd, Ord, Hash, Copy, Clone, Eq, PartialEq)]
 pub struct Point {
     pub y: i32,
@@ -38,6 +21,30 @@ pub struct Point {
 }
 
 impl Point {
+    pub const ORIGIN: Self = Self::new(0, 0);
+
+    pub const UP: Self = Self::new(0, -1);
+    pub const DOWN: Self = Self::new(0, 1);
+    pub const LEFT: Self = Self::new(-1, 0);
+    pub const RIGHT: Self = Self::new(1, 0);
+
+    pub const UP_LEFT: Self = Self::new(-1, -1);
+    pub const UP_RIGHT: Self = Self::new(1, -1);
+    pub const DOWN_RIGHT: Self = Self::new(1, 1);
+    pub const DOWN_LEFT: Self = Self::new(-1, 1);
+
+    pub const ORTHOGONALS: [Self; 4] = [Self::UP, Self::RIGHT, Self::DOWN, Self::LEFT];
+    pub const DIRS: [Self; 8] = [
+        Self::UP,
+        Self::UP_RIGHT,
+        Self::RIGHT,
+        Self::DOWN_RIGHT,
+        Self::DOWN,
+        Self::DOWN_LEFT,
+        Self::LEFT,
+        Self::UP_LEFT,
+    ];
+
     pub const fn new(x: i32, y: i32) -> Self {
         Self { y, x }
     }
@@ -47,13 +54,16 @@ impl Point {
     }
 
     pub fn orthogonals(&self) -> Vec<Self> {
-        ORTHOGONALS.iter().map(move |&dir| *self + dir).collect()
+        Self::ORTHOGONALS
+            .iter()
+            .map(move |&dir| *self + dir)
+            .collect()
     }
 
     #[must_use]
     pub fn normalized(&self) -> Self {
-        if self == &ORIGIN {
-            return ORIGIN;
+        if self == &Self::ORIGIN {
+            return Self::ORIGIN;
         }
         let n = gcd(self.x, self.y);
         Self {

@@ -6,11 +6,7 @@ use gxhash::{
 use crate::utils::{
     edge::Edge,
     grid::Grid,
-    point::{
-        DOWN,
-        Point,
-        RIGHT,
-    },
+    point::Point,
 };
 
 type Input = Vec<(usize, HashSet<Edge>)>;
@@ -65,7 +61,8 @@ pub fn part2(input: &Input) -> usize {
             let len = edges
                 .iter()
                 .filter(|&&edge| {
-                    !edges.contains(&(edge + RIGHT)) && !edges.contains(&(edge + DOWN))
+                    !edges.contains(&(edge + Point::RIGHT))
+                        && !edges.contains(&(edge + Point::DOWN))
                 })
                 .count();
             area * len

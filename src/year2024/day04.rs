@@ -1,12 +1,6 @@
 use crate::utils::{
     grid::Grid,
-    point::{
-        DIRS,
-        DOWN_LEFT,
-        DOWN_RIGHT,
-        UP_LEFT,
-        UP_RIGHT,
-    },
+    point::Point,
 };
 
 pub fn parse(input: &str) -> Grid<u8> {
@@ -21,7 +15,7 @@ pub fn part1(grid: &Grid<u8>) -> i32 {
         if val != target.iter().next().unwrap() {
             continue;
         }
-        for dir in DIRS {
+        for dir in Point::DIRS {
             let mut matched = true;
             for (i, &c) in target.iter().enumerate().skip(1) {
                 let new = start + dir * i;
@@ -43,10 +37,14 @@ pub fn part2(grid: &Grid<u8>) -> usize {
         .into_iter()
         .filter(|&point| {
             grid[point] == b'A'
-                && ((grid[point + UP_LEFT] == b'M' && grid[point + DOWN_RIGHT] == b'S')
-                    || (grid[point + UP_LEFT] == b'S' && grid[point + DOWN_RIGHT] == b'M'))
-                && ((grid[point + UP_RIGHT] == b'M' && grid[point + DOWN_LEFT] == b'S')
-                    || (grid[point + UP_RIGHT] == b'S' && grid[point + DOWN_LEFT] == b'M'))
+                && ((grid[point + Point::UP_LEFT] == b'M'
+                    && grid[point + Point::DOWN_RIGHT] == b'S')
+                    || (grid[point + Point::UP_LEFT] == b'S'
+                        && grid[point + Point::DOWN_RIGHT] == b'M'))
+                && ((grid[point + Point::UP_RIGHT] == b'M'
+                    && grid[point + Point::DOWN_LEFT] == b'S')
+                    || (grid[point + Point::UP_RIGHT] == b'S'
+                        && grid[point + Point::DOWN_LEFT] == b'M'))
         })
         .count()
 }

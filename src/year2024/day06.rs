@@ -5,7 +5,7 @@ use gxhash::{
 
 use crate::utils::{
     grid::Grid,
-    point::UP,
+    point::Point,
     threading::run_threads,
 };
 
@@ -15,7 +15,7 @@ pub fn parse(input: &str) -> Grid<u8> {
 
 pub fn part1(grid: &Grid<u8>) -> usize {
     let mut pos = grid.find(&b'^').unwrap();
-    let mut dir = UP;
+    let mut dir = Point::UP;
 
     let mut visited = HashSet::new();
     while grid.contains(pos + dir) {
@@ -34,7 +34,7 @@ pub fn part2(grid: &Grid<u8>) -> usize {
     let original_pos = grid.find(&b'^').unwrap();
 
     let mut pos = original_pos;
-    let mut dir = UP;
+    let mut dir = Point::UP;
 
     let mut visited = HashSet::new();
     while grid.contains(pos + dir) {
@@ -55,7 +55,7 @@ pub fn part2(grid: &Grid<u8>) -> usize {
             grid[obstacle_pos] = b'#';
 
             let mut pos = original_pos;
-            let mut dir = UP;
+            let mut dir = Point::UP;
 
             let mut visited = HashSet::new();
             while grid.contains(pos + dir) {

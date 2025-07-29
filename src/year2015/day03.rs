@@ -3,13 +3,7 @@ use gxhash::{
     HashSetExt,
 };
 
-use crate::utils::point::{
-    DOWN,
-    LEFT,
-    ORIGIN,
-    RIGHT,
-    UP,
-};
+use crate::utils::point::Point;
 
 type Input = String;
 
@@ -18,15 +12,15 @@ pub fn parse(input: &str) -> Input {
 }
 
 pub fn part1(input: &Input) -> usize {
-    let mut position = ORIGIN;
+    let mut position = Point::ORIGIN;
     let mut visited = HashSet::new();
     visited.insert(position);
     for c in input.chars() {
         match c {
-            '^' => position += UP,
-            'v' => position += DOWN,
-            '>' => position += RIGHT,
-            '<' => position += LEFT,
+            '^' => position += Point::UP,
+            'v' => position += Point::DOWN,
+            '>' => position += Point::RIGHT,
+            '<' => position += Point::LEFT,
             _ => unreachable!(),
         }
         visited.insert(position);
@@ -35,17 +29,17 @@ pub fn part1(input: &Input) -> usize {
 }
 
 pub fn part2(input: &Input) -> usize {
-    let mut positions = [ORIGIN, ORIGIN];
+    let mut positions = [Point::ORIGIN, Point::ORIGIN];
     let mut visited = HashSet::new();
     visited.insert(positions[0]);
 
     for (i, c) in input.chars().enumerate() {
         let idx = i % 2;
         match c {
-            '^' => positions[idx] += UP,
-            'v' => positions[idx] += DOWN,
-            '>' => positions[idx] += RIGHT,
-            '<' => positions[idx] += LEFT,
+            '^' => positions[idx] += Point::UP,
+            'v' => positions[idx] += Point::DOWN,
+            '>' => positions[idx] += Point::RIGHT,
+            '<' => positions[idx] += Point::LEFT,
             _ => unreachable!(),
         }
         visited.insert(positions[idx]);
