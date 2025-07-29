@@ -77,6 +77,20 @@ pub fn part1(input: &[Instruction]) -> usize {
         .count()
 }
 
-pub fn part2(input: &[Instruction]) -> usize {
-    input.len()
+pub fn part2(input: &[Instruction]) -> i32 {
+    let mut grid: Grid<i32> = Grid::new(1000, 1000);
+    for instruction in input {
+        for point in instruction.p1.between(instruction.p2) {
+            match instruction.action {
+                Action::TurnOn => grid[point] += 1,
+                Action::Toggle => grid[point] += 2,
+                Action::TurnOff => {
+                    if grid[point] > 0 {
+                        grid[point] -= 1;
+                    }
+                }
+            }
+        }
+    }
+    grid.iter().map(|(_, &brightness)| brightness).sum()
 }
