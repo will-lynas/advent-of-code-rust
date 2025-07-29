@@ -1,18 +1,14 @@
-pub fn parse(input: &str) -> String {
-    input.to_string()
+pub fn parse(input: &str) -> &str {
+    input
 }
 
 pub fn part1(input: &str) -> i32 {
-    input
-        .trim()
-        .chars()
-        .map(|c| if c == '(' { 1 } else { -1 })
-        .sum()
+    input.chars().map(|c| if c == '(' { 1 } else { -1 }).sum()
 }
 
 pub fn part2(input: &str) -> usize {
     let mut floor = 0;
-    for (i, c) in input.trim().chars().enumerate() {
+    for (i, c) in input.chars().enumerate() {
         if c == '(' {
             floor += 1;
         } else {

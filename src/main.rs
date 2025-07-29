@@ -53,7 +53,7 @@ fn main() {
     {
         if let Ok(data) = read_to_string(path) {
             let instant = Instant::now();
-            let (part1, part2) = wrapper(data);
+            let (part1, part2) = wrapper(data.trim().to_string());
             duration += instant.elapsed();
 
             println!("{BOLD}{YELLOW}{year} {day:02}{RESET}");
