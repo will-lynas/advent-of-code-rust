@@ -1,3 +1,9 @@
+use gxhash::{
+    HashMap,
+    HashMapExt,
+};
+use itertools::Itertools;
+
 type Input = Vec<String>;
 
 const VOWELS: &[char] = &['a', 'e', 'i', 'o', 'u'];
@@ -21,5 +27,26 @@ pub fn part1(input: &Input) -> usize {
 }
 
 pub fn part2(input: &Input) -> usize {
-    input.len()
+    input
+        .iter()
+        .filter(|s| {
+            let mut pairs: HashMap<(char, char), Vec<usize>> = HashMap::new();
+            for (i, (a, b)) in s.chars().tuple_windows().enumerate() {
+                let entry = pairs.entry((a, b)).or_default();
+                if entry.iter().any(|j| i - j > 1) {
+                    return true;
+                }
+                entry.push(i);
+            }
+            false
+        })
+        .filter(|s| {
+            for (a, _, c) in s.chars().tuple_windows() {
+                if a == c {
+                    return true;
+                }
+            }
+            false
+        })
+        .count()
 }
