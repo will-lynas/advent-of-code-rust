@@ -1,5 +1,5 @@
-pub fn parse(input: &str) -> &str {
-    input
+pub fn parse(input: &str) -> String {
+    input.into()
 }
 
 pub fn part1(input: &str) -> i32 {
