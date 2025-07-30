@@ -45,6 +45,56 @@ impl Operator {
     }
 }
 
+pub struct Circuit {
+    pub connections: Connections,
+    pub cache: HashMap<String, u16>,
+}
+
+impl Circuit {
+    fn new(connections: Connections) -> Self {
+        Self {
+            connections,
+            cache: HashMap::new(),
+        }
+    }
+
+    fn eval_operand(&mut self, operand: &Operand) -> u16 {
+        match operand {
+            Operand::Literal(value) => *value,
+            Operand::Wire(wire) => {
+                if let Some(value) = self.cache.get(wire) {
+                    *value
+                } else {
+                    let operator = self.connections[wire].clone();
+                    let value = self.eval_operator(&operator);
+                    self.cache.insert(wire.clone(), value);
+                    value
+                }
+            }
+        }
+    }
+
+    fn eval_operator(&mut self, operator: &Operator) -> u16 {
+        match operator {
+            Operator::Identity(operand) => self.eval_operand(operand),
+            Operator::Not(operand) => !self.eval_operand(operand),
+            Operator::And(lhs, rhs) => self.eval_operand(lhs) & self.eval_operand(rhs),
+            Operator::Or(lhs, rhs) => self.eval_operand(lhs) | self.eval_operand(rhs),
+            Operator::LShift(lhs, rhs) => self.eval_operand(lhs) << self.eval_operand(rhs),
+            Operator::RShift(lhs, rhs) => self.eval_operand(lhs) >> self.eval_operand(rhs),
+        }
+    }
+
+    pub fn signal(&mut self, wire: &str) -> u16 {
+        self.eval_operand(&Operand::Wire(wire.into()))
+    }
+
+    pub fn override_wire(&mut self, wire: &str, value: u16) {
+        self.connections
+            .insert(wire.into(), Operator::Identity(Operand::Literal(value)));
+    }
+}
+
 pub fn parse(input: &str) -> Connections {
     let mut connections = HashMap::new();
     for line in input.lines() {
@@ -54,57 +104,15 @@ pub fn parse(input: &str) -> Connections {
     connections
 }
 
-fn evaluate_operand(
-    cache: &mut HashMap<String, u16>,
-    connections: &Connections,
-    operand: &Operand,
-) -> u16 {
-    match operand {
-        Operand::Literal(value) => *value,
-        Operand::Wire(wire) => {
-            if let Some(value) = cache.get(wire) {
-                *value
-            } else {
-                let value = evaluate_operator(cache, connections, &connections[wire]);
-                cache.insert(wire.clone(), value);
-                value
-            }
-        }
-    }
-}
-
-fn evaluate_operator(
-    cache: &mut HashMap<String, u16>,
-    connections: &Connections,
-    operator: &Operator,
-) -> u16 {
-    match operator {
-        Operator::Identity(operand) => evaluate_operand(cache, connections, operand),
-        Operator::Not(operand) => !evaluate_operand(cache, connections, operand),
-        Operator::And(lhs, rhs) => {
-            evaluate_operand(cache, connections, lhs) & evaluate_operand(cache, connections, rhs)
-        }
-        Operator::Or(lhs, rhs) => {
-            evaluate_operand(cache, connections, lhs) | evaluate_operand(cache, connections, rhs)
-        }
-        Operator::LShift(lhs, rhs) => {
-            evaluate_operand(cache, connections, lhs) << evaluate_operand(cache, connections, rhs)
-        }
-        Operator::RShift(lhs, rhs) => {
-            evaluate_operand(cache, connections, lhs) >> evaluate_operand(cache, connections, rhs)
-        }
-    }
-}
-
 pub fn part1(connections: &Connections) -> u16 {
-    let mut cache = HashMap::new();
-    evaluate_operand(&mut cache, connections, &Operand::Wire("a".into()))
+    let mut circuit = Circuit::new(connections.clone());
+    circuit.signal("a")
 }
 
 pub fn part2(connections: &Connections) -> u16 {
-    let signal = part1(connections);
-    let mut connections = connections.clone();
-    connections.insert("b".into(), Operator::Identity(Operand::Literal(signal)));
-    let mut cache = HashMap::new();
-    evaluate_operand(&mut cache, &connections, &Operand::Wire("a".into()))
+    let mut circuit = Circuit::new(connections.clone());
+    let signal = circuit.signal("a");
+    circuit.override_wire("b", signal);
+    circuit.cache.clear();
+    circuit.signal("a")
 }
