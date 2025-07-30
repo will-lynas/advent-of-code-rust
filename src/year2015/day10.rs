@@ -29,5 +29,7 @@ pub fn part1(input: &str) -> usize {
 }
 
 pub fn part2(input: &str) -> usize {
-    input.len()
+    (0..50)
+        .fold(input.to_string(), |acc, _| transform(&acc))
+        .len()
 }
