@@ -60,7 +60,7 @@ fn evaluate_operand(
             if let Some(value) = cache.get(wire) {
                 *value
             } else {
-                let value = evaluate_operator(cache, connections, connections.get(wire).unwrap());
+                let value = evaluate_operator(cache, connections, &connections[wire]);
                 cache.insert(wire.clone(), value);
                 value
             }
