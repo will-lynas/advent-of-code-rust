@@ -18,16 +18,6 @@ fn unescaped(input: &str) -> usize {
     result
 }
 
-fn escaped(input: &str) -> usize {
-    let mut result = 0;
-    for c in input.chars() {
-        if c == '\\' || c == '"' {
-            result += 1;
-        }
-    }
-    result
-}
-
 pub fn part1(input: &[String]) -> usize {
     input
         .iter()
@@ -36,5 +26,8 @@ pub fn part1(input: &[String]) -> usize {
 }
 
 pub fn part2(input: &[String]) -> usize {
-    input.iter().map(|line| 4 + escaped(line)).sum()
+    input
+        .iter()
+        .map(|line| 4 + line.chars().filter(|&c| c == '\\' || c == '"').count())
+        .sum()
 }
