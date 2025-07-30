@@ -35,21 +35,13 @@ pub fn parse(input: &str) -> Connections {
     for line in input.lines() {
         let (expression, wire) = line.split_once(" -> ").unwrap();
         let expression: Vec<_> = expression.split_whitespace().collect();
-        let operator = match expression.len() {
-            1 => Operator::Identity(Operand::parse(expression[0])),
-            2 => Operator::Not(Operand::parse(expression[1])),
-            3 => {
-                let lhs = Operand::parse(expression[0]);
-                let rhs = Operand::parse(expression[2]);
-                #[allow(clippy::match_on_vec_items)]
-                match expression[1] {
-                    "AND" => Operator::And(lhs, rhs),
-                    "OR" => Operator::Or(lhs, rhs),
-                    "LSHIFT" => Operator::LShift(lhs, rhs),
-                    "RSHIFT" => Operator::RShift(lhs, rhs),
-                    _ => unreachable!(),
-                }
-            }
+        let operator = match expression.as_slice() {
+            [a] => Operator::Identity(Operand::parse(a)),
+            ["NOT", a] => Operator::Not(Operand::parse(a)),
+            [a, "AND", b] => Operator::And(Operand::parse(a), Operand::parse(b)),
+            [a, "OR", b] => Operator::Or(Operand::parse(a), Operand::parse(b)),
+            [a, "LSHIFT", b] => Operator::LShift(Operand::parse(a), Operand::parse(b)),
+            [a, "RSHIFT", b] => Operator::RShift(Operand::parse(a), Operand::parse(b)),
             _ => unreachable!(),
         };
         connections.insert(wire.into(), operator);
