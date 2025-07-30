@@ -1,11 +1,13 @@
 use advent_of_code::year2015::day09 as solution;
 
-const EXAMPLE: &str = "Hello, World!";
+const EXAMPLE: &str = "London to Dublin = 464
+London to Belfast = 518
+Dublin to Belfast = 141";
 
 #[test]
 fn part1() {
     let input = solution::parse(EXAMPLE);
-    assert_eq!(solution::part1(&input), 13);
+    assert_eq!(solution::part1(&input), 605);
 }
 
 #[test]
