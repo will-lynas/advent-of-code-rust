@@ -2,7 +2,11 @@ pub fn parse(input: &str) -> String {
     input.to_string()
 }
 
-fn transform(input: &str) -> String {
+fn solve(input: &str, iterations: usize) -> usize {
+    if iterations == 0 {
+        return input.len();
+    }
+
     let mut result = String::new();
     let mut chars = input.chars();
     let mut count = 1;
@@ -19,17 +23,14 @@ fn transform(input: &str) -> String {
     }
     result.push_str(&count.to_string());
     result.push(current);
-    result
+
+    solve(&result, iterations - 1)
 }
 
 pub fn part1(input: &str) -> usize {
-    (0..40)
-        .fold(input.to_string(), |acc, _| transform(&acc))
-        .len()
+    solve(input, 40)
 }
 
 pub fn part2(input: &str) -> usize {
-    (0..50)
-        .fold(input.to_string(), |acc, _| transform(&acc))
-        .len()
+    solve(input, 50)
 }
