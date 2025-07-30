@@ -11,6 +11,15 @@ pub enum Operand {
     Wire(String),
 }
 
+impl Operand {
+    fn parse(operand: &str) -> Self {
+        match operand.parse::<u16>() {
+            Ok(literal) => Operand::Literal(literal),
+            Err(_) => Operand::Wire(operand.into()),
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 pub enum Operator {
     And(Operand, Operand),
@@ -21,11 +30,17 @@ pub enum Operator {
     Identity(Operand),
 }
 
-impl Operand {
-    fn parse(operand: &str) -> Self {
-        match operand.parse::<u16>() {
-            Ok(literal) => Operand::Literal(literal),
-            Err(_) => Operand::Wire(operand.into()),
+impl Operator {
+    fn parse(expression: &str) -> Self {
+        let expression: Vec<_> = expression.split_whitespace().collect();
+        match expression.as_slice() {
+            [a] => Operator::Identity(Operand::parse(a)),
+            ["NOT", a] => Operator::Not(Operand::parse(a)),
+            [a, "AND", b] => Operator::And(Operand::parse(a), Operand::parse(b)),
+            [a, "OR", b] => Operator::Or(Operand::parse(a), Operand::parse(b)),
+            [a, "LSHIFT", b] => Operator::LShift(Operand::parse(a), Operand::parse(b)),
+            [a, "RSHIFT", b] => Operator::RShift(Operand::parse(a), Operand::parse(b)),
+            _ => unreachable!(),
         }
     }
 }
@@ -34,17 +49,7 @@ pub fn parse(input: &str) -> Connections {
     let mut connections = HashMap::new();
     for line in input.lines() {
         let (expression, wire) = line.split_once(" -> ").unwrap();
-        let expression: Vec<_> = expression.split_whitespace().collect();
-        let operator = match expression.as_slice() {
-            [a] => Operator::Identity(Operand::parse(a)),
-            ["NOT", a] => Operator::Not(Operand::parse(a)),
-            [a, "AND", b] => Operator::And(Operand::parse(a), Operand::parse(b)),
-            [a, "OR", b] => Operator::Or(Operand::parse(a), Operand::parse(b)),
-            [a, "LSHIFT", b] => Operator::LShift(Operand::parse(a), Operand::parse(b)),
-            [a, "RSHIFT", b] => Operator::RShift(Operand::parse(a), Operand::parse(b)),
-            _ => unreachable!(),
-        };
-        connections.insert(wire.into(), operator);
+        connections.insert(wire.into(), Operator::parse(expression));
     }
     connections
 }
