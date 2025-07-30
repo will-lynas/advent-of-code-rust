@@ -5,12 +5,13 @@ use gxhash::{
 
 type Connections = HashMap<String, Operator>;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Operand {
     Literal(u16),
     Wire(String),
 }
 
+#[derive(Debug, Clone)]
 pub enum Operator {
     And(Operand, Operand),
     Or(Operand, Operand),
@@ -103,6 +104,10 @@ pub fn part1(connections: &Connections) -> u16 {
     evaluate_operand(&mut cache, connections, &Operand::Wire("a".into()))
 }
 
-pub fn part2(connections: &Connections) -> usize {
-    connections.len()
+pub fn part2(connections: &Connections) -> u16 {
+    let signal = part1(connections);
+    let mut connections = connections.clone();
+    connections.insert("b".into(), Operator::Identity(Operand::Literal(signal)));
+    let mut cache = HashMap::new();
+    evaluate_operand(&mut cache, &connections, &Operand::Wire("a".into()))
 }
