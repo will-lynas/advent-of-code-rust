@@ -2,7 +2,7 @@ pub fn parse(input: &str) -> String {
     input.to_string()
 }
 
-fn transform(input: String) -> String {
+fn transform(input: &str) -> String {
     let mut result = String::new();
     let mut chars = input.chars();
     let mut count = 1;
@@ -24,7 +24,7 @@ fn transform(input: String) -> String {
 
 pub fn part1(input: &str) -> usize {
     (0..40)
-        .fold(input.to_string(), |acc, _| transform(acc))
+        .fold(input.to_string(), |acc, _| transform(&acc))
         .len()
 }
 
