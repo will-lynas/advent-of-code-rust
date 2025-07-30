@@ -32,7 +32,7 @@ pub enum Operator {
 
 impl Operator {
     fn parse(expression: &str) -> Self {
-        let expression: Vec<_> = expression.split_whitespace().collect();
+        let expression: Vec<_> = expression.split_ascii_whitespace().collect();
         match expression.as_slice() {
             [a] => Operator::Identity(Operand::parse(a)),
             ["NOT", a] => Operator::Not(Operand::parse(a)),
