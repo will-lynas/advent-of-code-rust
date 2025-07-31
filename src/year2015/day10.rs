@@ -156,22 +156,20 @@ impl Solver {
         element_name: &'static str,
         iterations: usize,
     ) -> usize {
+        if iterations == 0 {
+            return *elements.lengths.get(element_name).unwrap();
+        }
         if let Some(&result) = self.cache.get(&(element_name, iterations)) {
             return result;
         }
 
-        let result = if iterations == 0 {
-            *elements.lengths.get(element_name).unwrap()
-        } else {
-            elements
-                .decays
-                .get(element_name)
-                .unwrap()
-                .iter()
-                .map(|&atom| self.solve_r(elements, atom, iterations - 1))
-                .sum()
-        };
-
+        let result = elements
+            .decays
+            .get(element_name)
+            .unwrap()
+            .iter()
+            .map(|&atom| self.solve_r(elements, atom, iterations - 1))
+            .sum();
         self.cache.insert((element_name, iterations), result);
         result
     }
