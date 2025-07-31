@@ -112,10 +112,10 @@ pub struct Elements {
 }
 
 pub fn parse(input: &str) -> (usize, Elements) {
-    let mut name_to_index = HashMap::new();
-    let mut string_to_index = HashMap::new();
-    let mut decays = Vec::new();
-    let mut lengths = Vec::new();
+    let mut name_to_index = HashMap::with_capacity(NUM_ELEMENTS);
+    let mut string_to_index = HashMap::with_capacity(NUM_ELEMENTS);
+    let mut decays = Vec::with_capacity(NUM_ELEMENTS);
+    let mut lengths = Vec::with_capacity(NUM_ELEMENTS);
 
     let lines: Vec<Vec<&str>> = ELEMENTS
         .trim()
