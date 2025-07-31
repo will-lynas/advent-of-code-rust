@@ -105,9 +105,9 @@ U 	3 	Pa
 
 #[derive(Clone)]
 pub struct Elements {
-    element_names: HashMap<String, String>,
-    decays: HashMap<String, Vec<String>>,
-    lengths: HashMap<String, usize>,
+    element_names: HashMap<&'static str, &'static str>,
+    decays: HashMap<&'static str, Vec<&'static str>>,
+    lengths: HashMap<&'static str, usize>,
 }
 
 pub fn parse(input: &str) -> (String, Elements) {
@@ -117,12 +117,12 @@ pub fn parse(input: &str) -> (String, Elements) {
 
     for line in ELEMENTS.trim().lines() {
         let parts: Vec<_> = line.split_whitespace().collect();
-        let element_name = parts[0].to_string();
-        let string = parts[1].to_string();
-        let decay_atoms: Vec<_> = parts[2].split('.').map(ToString::to_string).collect();
-        element_names.insert(string.clone(), element_name.clone());
-        decays.insert(element_name.clone(), decay_atoms.clone());
-        lengths.insert(element_name.clone(), string.len());
+        let element_name = parts[0];
+        let string = parts[1];
+        let decay_atoms: Vec<_> = parts[2].split('.').collect();
+        element_names.insert(string, element_name);
+        decays.insert(element_name, decay_atoms);
+        lengths.insert(element_name, string.len());
     }
 
     let elements = Elements {
@@ -135,7 +135,7 @@ pub fn parse(input: &str) -> (String, Elements) {
 }
 
 struct Solver {
-    cache: HashMap<(String, usize), usize>,
+    cache: HashMap<(&'static str, usize), usize>,
 }
 
 impl Solver {
@@ -146,12 +146,17 @@ impl Solver {
     }
 
     fn solve(&mut self, elements: &Elements, input: &str, iterations: usize) -> usize {
-        let element_name = elements.element_names.get(input).unwrap();
+        let element_name = *elements.element_names.get(input).unwrap();
         self.solve_r(elements, element_name, iterations)
     }
 
-    fn solve_r(&mut self, elements: &Elements, element_name: &str, iterations: usize) -> usize {
-        if let Some(&result) = self.cache.get(&(element_name.into(), iterations)) {
+    fn solve_r(
+        &mut self,
+        elements: &Elements,
+        element_name: &'static str,
+        iterations: usize,
+    ) -> usize {
+        if let Some(&result) = self.cache.get(&(element_name, iterations)) {
             return result;
         }
 
@@ -163,11 +168,11 @@ impl Solver {
                 .get(element_name)
                 .unwrap()
                 .iter()
-                .map(|atom| self.solve_r(elements, atom, iterations - 1))
+                .map(|&atom| self.solve_r(elements, atom, iterations - 1))
                 .sum()
         };
 
-        self.cache.insert((element_name.into(), iterations), result);
+        self.cache.insert((element_name, iterations), result);
         result
     }
 }
