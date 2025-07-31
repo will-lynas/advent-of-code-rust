@@ -103,84 +103,80 @@ Pa 	13 	Th
 U 	3 	Pa 
 ";
 
-#[derive(Clone)]
+const NUM_ELEMENTS: usize = 92;
+const MAX_ITERATIONS: usize = 50;
+
 pub struct Elements {
-    element_names: HashMap<&'static str, &'static str>,
-    decays: HashMap<&'static str, Vec<&'static str>>,
-    lengths: HashMap<&'static str, usize>,
+    decays: Vec<Vec<usize>>,
+    lengths: Vec<usize>,
 }
 
-pub fn parse(input: &str) -> (String, Elements) {
-    let mut element_names = HashMap::new();
-    let mut decays = HashMap::new();
-    let mut lengths = HashMap::new();
+pub fn parse(input: &str) -> (usize, Elements) {
+    let mut name_to_index = HashMap::new();
+    let mut string_to_index = HashMap::new();
+    let mut decays = Vec::new();
+    let mut lengths = Vec::new();
 
-    for line in ELEMENTS.trim().lines() {
-        let parts: Vec<_> = line.split_whitespace().collect();
-        let element_name = parts[0];
-        let string = parts[1];
-        let decay_atoms: Vec<_> = parts[2].split('.').collect();
-        element_names.insert(string, element_name);
-        decays.insert(element_name, decay_atoms);
-        lengths.insert(element_name, string.len());
+    let lines: Vec<Vec<&str>> = ELEMENTS
+        .trim()
+        .lines()
+        .map(|line| line.split_whitespace().collect())
+        .collect();
+
+    for (idx, parts) in lines.iter().enumerate() {
+        name_to_index.insert(parts[0], idx);
+        string_to_index.insert(parts[1], idx);
+        lengths.push(parts[1].len());
     }
 
-    let elements = Elements {
-        element_names,
-        decays,
-        lengths,
-    };
+    for parts in lines {
+        decays.push(
+            parts[2]
+                .split('.')
+                .map(|name| *name_to_index.get(name).unwrap())
+                .collect(),
+        );
+    }
 
-    (input.into(), elements)
+    let elements = Elements { decays, lengths };
+    let start_index = *string_to_index.get(input).unwrap();
+    (start_index, elements)
 }
 
 struct Solver {
-    cache: HashMap<(&'static str, usize), usize>,
+    cache: [[Option<usize>; NUM_ELEMENTS]; MAX_ITERATIONS + 1],
 }
 
 impl Solver {
     fn new() -> Self {
         Self {
-            cache: HashMap::new(),
+            cache: [[None; NUM_ELEMENTS]; MAX_ITERATIONS + 1],
         }
     }
 
-    fn solve(&mut self, elements: &Elements, input: &str, iterations: usize) -> usize {
-        let element_name = *elements.element_names.get(input).unwrap();
-        self.solve_r(elements, element_name, iterations)
-    }
-
-    fn solve_r(
-        &mut self,
-        elements: &Elements,
-        element_name: &'static str,
-        iterations: usize,
-    ) -> usize {
+    fn solve(&mut self, elements: &Elements, idx: usize, iterations: usize) -> usize {
         if iterations == 0 {
-            return *elements.lengths.get(element_name).unwrap();
+            return elements.lengths[idx];
         }
-        if let Some(&result) = self.cache.get(&(element_name, iterations)) {
+        if let Some(result) = self.cache[iterations][idx] {
             return result;
         }
 
-        let result = elements
-            .decays
-            .get(element_name)
-            .unwrap()
+        let result = elements.decays[idx]
             .iter()
-            .map(|&atom| self.solve_r(elements, atom, iterations - 1))
+            .map(|&atom| self.solve(elements, atom, iterations - 1))
             .sum();
-        self.cache.insert((element_name, iterations), result);
+        self.cache[iterations][idx] = Some(result);
         result
     }
 }
 
-pub fn part1((input, elements): &(String, Elements)) -> usize {
+pub fn part1((start_index, elements): &(usize, Elements)) -> usize {
     let mut solver = Solver::new();
-    solver.solve(elements, input, 40)
+    solver.solve(elements, *start_index, 40)
 }
 
-pub fn part2((input, elements): &(String, Elements)) -> usize {
+pub fn part2((start_index, elements): &(usize, Elements)) -> usize {
     let mut solver = Solver::new();
-    solver.solve(elements, input, 50)
+    solver.solve(elements, *start_index, 50)
 }
