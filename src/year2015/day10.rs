@@ -172,11 +172,9 @@ impl Solver {
 }
 
 pub fn part1((start_index, elements): &(usize, Elements)) -> usize {
-    let mut solver = Solver::new();
-    solver.solve(elements, *start_index, 40)
+    Solver::new().solve(elements, *start_index, 40)
 }
 
 pub fn part2((start_index, elements): &(usize, Elements)) -> usize {
-    let mut solver = Solver::new();
-    solver.solve(elements, *start_index, 50)
+    Solver::new().solve(elements, *start_index, 50)
 }
