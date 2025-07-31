@@ -136,37 +136,34 @@ pub fn parse(input: &str) -> (String, Elements) {
 
 struct Solver {
     cache: HashMap<(String, usize), usize>,
-    elements: Elements,
 }
 
 impl Solver {
-    fn new(elements: Elements) -> Self {
+    fn new() -> Self {
         Self {
             cache: HashMap::new(),
-            elements,
         }
     }
 
-    fn solve(&mut self, input: &str, iterations: usize) -> usize {
-        let element_name = self.elements.element_names.get(input).unwrap().clone();
-        self.solve_r(&element_name, iterations)
+    fn solve(&mut self, elements: &Elements, input: &str, iterations: usize) -> usize {
+        let element_name = elements.element_names.get(input).unwrap();
+        self.solve_r(elements, element_name, iterations)
     }
 
-    fn solve_r(&mut self, element_name: &str, iterations: usize) -> usize {
+    fn solve_r(&mut self, elements: &Elements, element_name: &str, iterations: usize) -> usize {
         if let Some(&result) = self.cache.get(&(element_name.into(), iterations)) {
             return result;
         }
 
         let result = if iterations == 0 {
-            *self.elements.lengths.get(element_name).unwrap()
+            *elements.lengths.get(element_name).unwrap()
         } else {
-            self.elements
+            elements
                 .decays
                 .get(element_name)
                 .unwrap()
-                .clone()
                 .iter()
-                .map(|atom| self.solve_r(atom, iterations - 1))
+                .map(|atom| self.solve_r(elements, atom, iterations - 1))
                 .sum()
         };
 
@@ -176,9 +173,11 @@ impl Solver {
 }
 
 pub fn part1((input, elements): &(String, Elements)) -> usize {
-    Solver::new(elements.clone()).solve(input, 40)
+    let mut solver = Solver::new();
+    solver.solve(elements, input, 40)
 }
 
 pub fn part2((input, elements): &(String, Elements)) -> usize {
-    Solver::new(elements.clone()).solve(input, 50)
+    let mut solver = Solver::new();
+    solver.solve(elements, input, 50)
 }
