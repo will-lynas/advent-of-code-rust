@@ -120,7 +120,7 @@ pub fn parse(input: &str) -> (usize, Elements) {
     let lines: Vec<Vec<&str>> = ELEMENTS
         .trim()
         .lines()
-        .map(|line| line.split_whitespace().collect())
+        .map(|line| line.split_ascii_whitespace().collect())
         .collect();
 
     for (idx, parts) in lines.iter().enumerate() {
