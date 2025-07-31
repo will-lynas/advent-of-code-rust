@@ -1,36 +1,184 @@
-pub fn parse(input: &str) -> String {
-    input.to_string()
+//! NB the puzzle input is guaranteed to be an *atom*
+//! So it will decay into more atoms
+
+use gxhash::{
+    HashMap,
+    HashMapExt,
+};
+
+// Copied from Wikipedia
+// element name, element string, decay atoms
+const ELEMENTS: &str = "
+H 	22 	H 
+He 	13112221133211322112211213322112 	Hf.Pa.H.Ca.Li 
+Li 	312211322212221121123222112 	He 
+Be 	111312211312113221133211322112211213322112 	Ge.Ca.Li 
+B 	1321132122211322212221121123222112 	Be 
+C 	3113112211322112211213322112 	B 
+N 	111312212221121123222112 	C 
+O 	132112211213322112 	N 
+F 	31121123222112 	O 
+Ne 	111213322112 	F 
+Na 	123222112 	Ne 
+Mg 	3113322112 	Pm.Na 
+Al 	1113222112 	Mg 
+Si 	1322112 	Al 
+P 	311311222112 	Ho.Si 
+S 	1113122112 	P 
+Cl 	132112 	S 
+Ar 	3112 	Cl 
+K 	1112 	Ar 
+Ca 	12 	K 
+Sc 	3113112221133112 	Ho.Pa.H.Ca.Co 
+Ti 	11131221131112 	Sc 
+V 	13211312 	Ti 
+Cr 	31132 	V 
+Mn 	111311222112 	Cr.Si 
+Fe 	13122112 	Mn 
+Co 	32112 	Fe 
+Ni 	11133112 	Zn.Co 
+Cu 	131112 	Ni 
+Zn 	312 	Cu 
+Ga 	13221133122211332 	Eu.Ca.Ac.H.Ca.Zn 
+Ge 	31131122211311122113222 	Ho.Ga 
+As 	11131221131211322113322112 	Ge.Na 
+Se 	13211321222113222112 	As 
+Br 	3113112211322112 	Se 
+Kr 	11131221222112 	Br 
+Rb 	1321122112 	Kr 
+Sr 	3112112 	Rb 
+Y 	1112133 	Sr.U 
+Zr 	12322211331222113112211 	Y.H.Ca.Tc 
+Nb 	1113122113322113111221131221 	Er.Zr 
+Mo 	13211322211312113211 	Nb 
+Tc 	311322113212221 	Mo 
+Ru 	132211331222113112211 	Eu.Ca.Tc 
+Rh 	311311222113111221131221 	Ho.Ru 
+Pd 	111312211312113211 	Rh 
+Ag 	132113212221 	Pd 
+Cd 	3113112211 	Ag 
+In 	11131221 	Cd 
+Sn 	13211 	In 
+Sb 	3112221 	Pm.Sn 
+Te 	1322113312211 	Eu.Ca.Sb 
+I 	311311222113111221 	Ho.Te 
+Xe 	11131221131211 	I 
+Cs 	13211321 	Xe 
+Ba 	311311 	Cs 
+La 	11131 	Ba 
+Ce 	1321133112 	La.H.Ca.Co 
+Pr 	31131112 	Ce 
+Nd 	111312 	Pr 
+Pm 	132 	Nd 
+Sm 	311332 	Pm.Ca.Zn 
+Eu 	1113222 	Sm 
+Gd 	13221133112 	Eu.Ca.Co 
+Tb 	3113112221131112 	Ho.Gd 
+Dy 	111312211312 	Tb 
+Ho 	1321132 	Dy 
+Er 	311311222 	Ho.Pm 
+Tm 	11131221133112 	Er.Ca.Co 
+Yb 	1321131112 	Tm 
+Lu 	311312 	Yb 
+Hf 	11132 	Lu 
+Ta 	13112221133211322112211213322113 	Hf.Pa.H.Ca.W 
+W 	312211322212221121123222113 	Ta 
+Re 	111312211312113221133211322112211213322113 	Ge.Ca.W 
+Os 	1321132122211322212221121123222113 	Re 
+Ir 	3113112211322112211213322113 	Os 
+Pt 	111312212221121123222113 	Ir 
+Au 	132112211213322113 	Pt 
+Hg 	31121123222113 	Au 
+Tl 	111213322113 	Hg 
+Pb 	123222113 	Tl 
+Bi 	3113322113 	Pm.Pb 
+Po 	1113222113 	Bi 
+At 	1322113 	Po 
+Rn 	311311222113 	Ho.At 
+Fr 	1113122113 	Rn 
+Ra 	132113 	Fr 
+Ac 	3113 	Ra 
+Th 	1113 	Ac 
+Pa 	13 	Th 
+U 	3 	Pa 
+";
+
+#[derive(Clone)]
+pub struct Elements {
+    element_names: HashMap<String, String>,
+    decays: HashMap<String, Vec<String>>,
+    lengths: HashMap<String, usize>,
 }
 
-fn solve(input: &str, iterations: usize) -> usize {
-    if iterations == 0 {
-        return input.len();
+pub fn parse(input: &str) -> (String, Elements) {
+    let mut element_names = HashMap::new();
+    let mut decays = HashMap::new();
+    let mut lengths = HashMap::new();
+
+    for line in ELEMENTS.trim().lines() {
+        let parts: Vec<_> = line.split_whitespace().collect();
+        let element_name = parts[0].to_string();
+        let string = parts[1].to_string();
+        let decay_atoms: Vec<_> = parts[2].split('.').map(ToString::to_string).collect();
+        element_names.insert(string.clone(), element_name.clone());
+        decays.insert(element_name.clone(), decay_atoms.clone());
+        lengths.insert(element_name.clone(), string.len());
     }
 
-    let mut result = String::new();
-    let mut chars = input.chars();
-    let mut count = 1;
-    let mut current = chars.next().unwrap();
-    for c in chars {
-        if c == current {
-            count += 1;
-        } else {
-            result.push_str(&count.to_string());
-            result.push(current);
-            count = 1;
-            current = c;
+    let elements = Elements {
+        element_names,
+        decays,
+        lengths,
+    };
+
+    (input.into(), elements)
+}
+
+struct Solver {
+    cache: HashMap<(String, usize), usize>,
+    elements: Elements,
+}
+
+impl Solver {
+    fn new(elements: Elements) -> Self {
+        Self {
+            cache: HashMap::new(),
+            elements,
         }
     }
-    result.push_str(&count.to_string());
-    result.push(current);
 
-    solve(&result, iterations - 1)
+    fn solve(&mut self, input: &str, iterations: usize) -> usize {
+        let element_name = self.elements.element_names.get(input).unwrap().clone();
+        self.solve_r(&element_name, iterations)
+    }
+
+    fn solve_r(&mut self, element_name: &str, iterations: usize) -> usize {
+        if let Some(&result) = self.cache.get(&(element_name.into(), iterations)) {
+            return result;
+        }
+
+        let result = if iterations == 0 {
+            *self.elements.lengths.get(element_name).unwrap()
+        } else {
+            self.elements
+                .decays
+                .get(element_name)
+                .unwrap()
+                .clone()
+                .iter()
+                .map(|atom| self.solve_r(atom, iterations - 1))
+                .sum()
+        };
+
+        self.cache.insert((element_name.into(), iterations), result);
+        result
+    }
 }
 
-pub fn part1(input: &str) -> usize {
-    solve(input, 40)
+pub fn part1((input, elements): &(String, Elements)) -> usize {
+    Solver::new(elements.clone()).solve(input, 40)
 }
 
-pub fn part2(input: &str) -> usize {
-    solve(input, 50)
+pub fn part2((input, elements): &(String, Elements)) -> usize {
+    Solver::new(elements.clone()).solve(input, 50)
 }
