@@ -144,13 +144,13 @@ pub fn parse(input: &str) -> (usize, Elements) {
 }
 
 struct Solver {
-    cache: [[Option<usize>; NUM_ELEMENTS]; MAX_ITERATIONS + 1],
+    cache: Box<[[Option<usize>; NUM_ELEMENTS]]>,
 }
 
 impl Solver {
     fn new() -> Self {
         Self {
-            cache: [[None; NUM_ELEMENTS]; MAX_ITERATIONS + 1],
+            cache: vec![[None; NUM_ELEMENTS]; MAX_ITERATIONS + 1].into_boxed_slice(),
         }
     }
 
