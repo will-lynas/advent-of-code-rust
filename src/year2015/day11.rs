@@ -15,7 +15,10 @@ fn forbidden(password: &[u8]) -> bool {
 }
 
 fn two_pairs(password: &[u8]) -> bool {
-    password.windows(2).filter(|w| w[0] == w[1]).count() >= 2
+    (b'a'..=b'z')
+        .filter(|&c| password.windows(2).any(|w| w[0] == c && w[1] == c))
+        .count()
+        >= 2
 }
 
 pub fn part1(password: &[u8; 8]) -> String {
