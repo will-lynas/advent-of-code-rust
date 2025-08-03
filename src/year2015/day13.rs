@@ -26,8 +26,11 @@ pub fn part1(input: &Pairs) -> i32 {
     let names: Vec<_> = input.keys().cloned().collect();
     names
         .iter()
-        .permutations(names.len())
+        .skip(1)
+        .permutations(names.len() - 1)
         .map(|perm| {
+            let mut perm = perm;
+            perm.push(&names[0]);
             perm.iter()
                 .circular_tuple_windows()
                 .map(|(&a, &b)| input[a][b] + input[b][a])
