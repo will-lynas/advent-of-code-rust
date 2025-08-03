@@ -7,6 +7,7 @@ use regex::Regex;
 pub fn parse(input: &str) -> Vec<Vec<i32>> {
     let re = Regex::new(r"(\w+) would (gain|lose) (\d+) happiness units by sitting next to (\w+).")
         .unwrap();
+
     let mut map: HashMap<String, HashMap<String, i32>> = HashMap::new();
     for line in input.lines() {
         let caps = re.captures(line).unwrap();
@@ -16,12 +17,14 @@ pub fn parse(input: &str) -> Vec<Vec<i32>> {
         let name2 = caps[4].to_string();
         map.entry(name1).or_default().insert(name2, mult * num);
     }
+
     let names_map: HashMap<String, usize> = map
         .keys()
         .enumerate()
         .map(|(i, k)| (k.clone(), i))
         .collect();
     let mut pairs: Vec<Vec<i32>> = vec![vec![0; names_map.len()]; names_map.len()];
+
     for (name1, map) in map {
         for (name2, value) in map {
             // precompute both directions
@@ -29,6 +32,7 @@ pub fn parse(input: &str) -> Vec<Vec<i32>> {
             pairs[names_map[&name2]][names_map[&name1]] += value;
         }
     }
+
     pairs
 }
 
