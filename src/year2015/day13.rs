@@ -37,6 +37,16 @@ pub fn part1(input: &Pairs) -> i32 {
         .unwrap()
 }
 
-pub fn part2(input: &Pairs) -> usize {
-    input.len()
+pub fn part2(input: &Pairs) -> i32 {
+    let mut input = input.clone();
+    let previous_names: Vec<_> = input.keys().cloned().collect();
+    for name in previous_names {
+        input
+            .entry(name.clone())
+            .or_default()
+            .insert("me".to_string(), 0);
+        input.entry("me".to_string()).or_default().insert(name, 0);
+    }
+
+    part1(&input)
 }
