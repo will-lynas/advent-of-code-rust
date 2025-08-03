@@ -25,7 +25,9 @@ pub fn parse(input: &str) -> Vec<Vec<i32>> {
     let mut pairs: Vec<Vec<i32>> = vec![vec![0; names_map.len()]; names_map.len()];
     for (name1, map) in map {
         for (name2, value) in map {
-            pairs[names_map[&name1]][names_map[&name2]] = value;
+            // precompute both directions
+            pairs[names_map[&name1]][names_map[&name2]] += value;
+            pairs[names_map[&name2]][names_map[&name1]] += value;
         }
     }
     pairs
@@ -38,10 +40,10 @@ pub fn part1(pairs: &[Vec<i32>]) -> i32 {
         .map(|perm| {
             perm.iter()
                 .tuple_windows()
-                .map(|(&a, &b)| pairs[a][b] + pairs[b][a])
+                .map(|(&a, &b)| pairs[a][b])
                 .sum::<i32>()
-                + (pairs[0][perm[0]] + pairs[perm[0]][0])
-                + (pairs[perm[n - 2]][0] + pairs[0][perm[n - 2]])
+                + pairs[0][perm[0]]
+                + pairs[perm[n - 2]][0]
         })
         .max()
         .unwrap()
