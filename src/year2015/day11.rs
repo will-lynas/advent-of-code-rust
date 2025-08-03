@@ -21,25 +21,35 @@ fn two_pairs(password: &[u8]) -> bool {
         >= 2
 }
 
-pub fn part1(password: &[u8; 8]) -> String {
-    let mut password = password.to_vec();
-    while !(consecutive(&password) && !forbidden(&password) && two_pairs(&password)) {
-        // increment
-        let mut i = 7;
-        loop {
-            password[i] += 1;
-            if password[i] > b'z' {
-                password[i] = b'a';
-                i -= 1;
-            } else {
-                break;
-            }
+fn increment(password: &mut [u8; 8]) {
+    let mut i = 7;
+    loop {
+        password[i] += 1;
+        if password[i] > b'z' {
+            password[i] = b'a';
+            i -= 1;
+        } else {
+            break;
         }
     }
-
-    String::from_utf8(password).unwrap()
 }
 
-pub fn part2(input: &[u8; 8]) -> usize {
-    input.len()
+fn make_valid(password: &mut [u8; 8]) {
+    while !(consecutive(password) && !forbidden(password) && two_pairs(password)) {
+        increment(password);
+    }
+}
+
+pub fn part1(password: &[u8; 8]) -> String {
+    let mut password = password.to_owned();
+    make_valid(&mut password);
+    String::from_utf8(password.to_vec()).unwrap()
+}
+
+pub fn part2(password: &[u8; 8]) -> String {
+    let mut password = password.to_owned();
+    make_valid(&mut password);
+    increment(&mut password);
+    make_valid(&mut password);
+    String::from_utf8(password.to_vec()).unwrap()
 }
