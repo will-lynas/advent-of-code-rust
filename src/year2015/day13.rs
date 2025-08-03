@@ -32,7 +32,7 @@ pub fn parse(input: &str) -> Vec<Vec<i32>> {
     pairs
 }
 
-pub fn part1(pairs: &[Vec<i32>]) -> i32 {
+fn solve(pairs: &[Vec<i32>]) -> i32 {
     let n = pairs.len();
     let full = 1 << n;
 
@@ -78,6 +78,10 @@ pub fn part1(pairs: &[Vec<i32>]) -> i32 {
         .unwrap()
 }
 
+pub fn part1(pairs: &[Vec<i32>]) -> i32 {
+    solve(pairs)
+}
+
 pub fn part2(pairs: &[Vec<i32>]) -> i32 {
     let mut pairs = pairs.to_vec();
     let n = pairs.len();
@@ -85,5 +89,5 @@ pub fn part2(pairs: &[Vec<i32>]) -> i32 {
         row.push(0);
     }
     pairs.push(vec![0; n + 1]);
-    part1(&pairs)
+    solve(&pairs)
 }
