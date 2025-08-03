@@ -2,7 +2,6 @@ use gxhash::{
     HashMap,
     HashMapExt,
 };
-use itertools::Itertools;
 use regex::Regex;
 
 pub fn parse(input: &str) -> Vec<Vec<i32>> {
@@ -35,16 +34,46 @@ pub fn parse(input: &str) -> Vec<Vec<i32>> {
 
 pub fn part1(pairs: &[Vec<i32>]) -> i32 {
     let n = pairs.len();
+    let full = 1 << n;
+
+    // dp[mask][i] is the maximum happiness of the position where:
+    // - person 0 is seated at position 0 (WLOG, due to rotational symmetry)
+    // - mask is the set of people already seated clockwise from person 0
+    //     (arranged to maximise happiness)
+    // - person i is seated at the last (most clockwise) position
+    //
+    // initialise to (effectively) -inf
+    // divide by 2 to avoid overflow
+    let mut dp = vec![vec![i32::MIN / 2; n]; full];
+
+    // fix person 0 at position 0 in the table
+    dp[1 << 0][0] = 0;
+
+    for mask in 1..(1 << n) {
+        #[allow(clippy::needless_range_loop)]
+        for i in 0..n {
+            if mask & (1 << i) == 0 {
+                // if person i is not seated,
+                //   then they certainly cannot be seated in the last position
+                continue;
+            }
+            // we now have a valid seating arrangement
+            for next in 0..n {
+                if mask & (1 << next) != 0 {
+                    // skip if the person is already seated
+                    continue;
+                }
+                let new_mask = mask | (1 << next);
+                let candidate = dp[mask][i] + pairs[i][next];
+                // can we improve?
+                dp[new_mask][next] = dp[new_mask][next].max(candidate);
+            }
+        }
+    }
+
+    // close the circle
     (1..n)
-        .permutations(n - 1)
-        .map(|perm| {
-            perm.iter()
-                .tuple_windows()
-                .map(|(&a, &b)| pairs[a][b])
-                .sum::<i32>()
-                + pairs[0][perm[0]]
-                + pairs[perm[n - 2]][0]
-        })
+        .map(|last| dp[full - 1][last] + pairs[last][0])
         .max()
         .unwrap()
 }
