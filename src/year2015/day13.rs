@@ -1,13 +1,42 @@
-type Input = String;
+use gxhash::{
+    HashMap,
+    HashMapExt,
+};
+use itertools::Itertools;
+use regex::Regex;
 
-pub fn parse(input: &str) -> Input {
-    input.into()
+type Pairs = HashMap<String, HashMap<String, i32>>;
+
+pub fn parse(input: &str) -> Pairs {
+    let re = Regex::new(r"(\w+) would (gain|lose) (\d+) happiness units by sitting next to (\w+).")
+        .unwrap();
+    let mut map: Pairs = HashMap::new();
+    for line in input.lines() {
+        let caps = re.captures(line).unwrap();
+        let name1 = caps[1].to_string();
+        let mult = if &caps[2] == "gain" { 1 } else { -1 };
+        let num: i32 = caps[3].parse().unwrap();
+        let name2 = caps[4].to_string();
+        map.entry(name1).or_default().insert(name2, mult * num);
+    }
+    map
 }
 
-pub fn part1(input: &Input) -> usize {
-    input.len()
+pub fn part1(input: &Pairs) -> i32 {
+    let names: Vec<_> = input.keys().cloned().collect();
+    names
+        .iter()
+        .permutations(names.len())
+        .map(|perm| {
+            perm.iter()
+                .circular_tuple_windows()
+                .map(|(&a, &b)| input[a][b] + input[b][a])
+                .sum()
+        })
+        .max()
+        .unwrap()
 }
 
-pub fn part2(input: &Input) -> usize {
+pub fn part2(input: &Pairs) -> usize {
     input.len()
 }
