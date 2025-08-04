@@ -8,6 +8,7 @@ pub struct Ingredient {
     calories: i64,
 }
 
+// Solve part1 and part2 at the same time
 pub fn parse(input: &str) -> (i64, i64) {
     let re = Regex::new(r" (-?\d+).* (-?\d+).* (-?\d+).* (-?\d+).* (-?\d+)").unwrap();
     let r: Vec<Ingredient> = input
