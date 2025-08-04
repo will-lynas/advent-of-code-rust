@@ -31,5 +31,21 @@ pub fn part1(input: &Input) -> u32 {
 }
 
 pub fn part2(input: &Input) -> usize {
-    input.len()
+    let t = 2503;
+    let mut points = vec![0; input.len()];
+    let mut distances = vec![0; input.len()];
+    for i in 0..t {
+        for (j, (speed, fly, cycle)) in input.iter().enumerate() {
+            if i % cycle < *fly {
+                distances[j] += *speed;
+            }
+        }
+        let max_distance = distances.iter().max().unwrap();
+        for j in 0..input.len() {
+            if distances[j] == *max_distance {
+                points[j] += 1;
+            }
+        }
+    }
+    *points.iter().max().unwrap()
 }
