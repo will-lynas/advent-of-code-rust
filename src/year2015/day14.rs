@@ -21,28 +21,28 @@ pub fn part1(input: &Input) -> u32 {
     let t = 2503;
     input
         .iter()
-        .map(|(speed, fly, cycle)| {
+        .map(|&(speed, fly, cycle)| {
             let full_cycles = t / cycle;
             let remaining = t % cycle;
-            full_cycles * speed * fly + speed * remaining.min(*fly)
+            full_cycles * speed * fly + speed * remaining.min(fly)
         })
         .max()
         .unwrap()
 }
 
-pub fn part2(input: &Input) -> usize {
+pub fn part2(input: &Input) -> u32 {
     let t = 2503;
     let mut points = vec![0; input.len()];
     let mut distances = vec![0; input.len()];
     for i in 0..t {
-        for (j, (speed, fly, cycle)) in input.iter().enumerate() {
-            if i % cycle < *fly {
-                distances[j] += *speed;
+        for (j, &(speed, fly, cycle)) in input.iter().enumerate() {
+            if i % cycle < fly {
+                distances[j] += speed;
             }
         }
-        let max_distance = distances.iter().max().unwrap();
+        let &max_distance = distances.iter().max().unwrap();
         for j in 0..input.len() {
-            if distances[j] == *max_distance {
+            if distances[j] == max_distance {
                 points[j] += 1;
             }
         }
