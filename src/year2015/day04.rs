@@ -15,13 +15,16 @@ fn find_leading_zeros(input: &str, n: usize) -> usize {
 
     // Pre-create the hasher so we don't have to create it for each iteration
     let mut hasher = Md5::new();
+    // pre-update the hasher with the input
+    hasher.update(input);
+
     // Pre-create the buffer to avoid allocations in each iteration
     let mut buf = itoa::Buffer::new();
 
     for i in 0.. {
-        hasher.update(input);
+        let mut hasher = hasher.clone();
         hasher.update(buf.format(i));
-        let hash: [u8; 16] = hasher.finalize_reset().into();
+        let hash: [u8; 16] = hasher.finalize().into();
         let value = u128::from_be_bytes(hash);
         if value & mask == 0 {
             return i;
