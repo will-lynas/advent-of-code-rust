@@ -1,7 +1,7 @@
 use advent_of_code::year2015::day15 as solution;
 
-// Dummy ingredients are used so that the length of the input can be
-// hardcoded as 4
+// Dummy ingredients are used in the test so that the length of the input
+// can be hardcoded as 4
 // These ingredients are all negative, so they will never be used
 const EXAMPLE: &str = "\
 Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
