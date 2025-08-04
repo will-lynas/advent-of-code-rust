@@ -8,11 +8,11 @@ pub fn parse(input: &str) -> Input {
         .lines()
         .map(|line| {
             let caps = re.captures(line).unwrap();
-            (
-                caps[1].parse().unwrap(),
-                caps[2].parse().unwrap(),
-                caps[3].parse().unwrap(),
-            )
+            let speed = caps[1].parse().unwrap();
+            let fly = caps[2].parse().unwrap();
+            let rest: u32 = caps[3].parse().unwrap();
+            let cycle = fly + rest;
+            (speed, fly, cycle)
         })
         .collect()
 }
@@ -21,8 +21,7 @@ pub fn part1(input: &Input) -> u32 {
     let t = 2503;
     input
         .iter()
-        .map(|(speed, fly, rest)| {
-            let cycle = fly + rest;
+        .map(|(speed, fly, cycle)| {
             let full_cycles = t / cycle;
             let remaining = t % cycle;
             full_cycles * speed * fly + speed * remaining.min(*fly)
