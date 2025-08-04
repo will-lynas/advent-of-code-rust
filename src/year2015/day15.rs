@@ -25,15 +25,29 @@ pub fn parse(input: &str) -> Vec<Ingredient> {
         .collect()
 }
 
-pub fn part1(ingredients: &[Ingredient]) -> i64 {
+pub fn part1(r: &[Ingredient]) -> i64 {
     let mut max_score = 0;
-    for i in 0..100 {
-        let j = 100 - i;
-        let mut score = (i * ingredients[0].capacity + j * ingredients[1].capacity).max(0);
-        score *= (i * ingredients[0].durability + j * ingredients[1].durability).max(0);
-        score *= (i * ingredients[0].flavor + j * ingredients[1].flavor).max(0);
-        score *= (i * ingredients[0].texture + j * ingredients[1].texture).max(0);
-        max_score = max_score.max(score);
+    for i in 0..=100 {
+        for j in 0..=100 - i {
+            for k in 0..=100 - i - j {
+                let l = 100 - i - j - k;
+                let score = (i * r[0].capacity
+                    + j * r[1].capacity
+                    + k * r[2].capacity
+                    + l * r[3].capacity)
+                    .max(0)
+                    * (i * r[0].durability
+                        + j * r[1].durability
+                        + k * r[2].durability
+                        + l * r[3].durability)
+                        .max(0)
+                    * (i * r[0].flavor + j * r[1].flavor + k * r[2].flavor + l * r[3].flavor)
+                        .max(0)
+                    * (i * r[0].texture + j * r[1].texture + k * r[2].texture + l * r[3].texture)
+                        .max(0);
+                max_score = max_score.max(score);
+            }
+        }
     }
     max_score
 }
