@@ -1,61 +1,44 @@
 use regex::Regex;
 
-pub struct Ingredient {
-    capacity: i64,
-    durability: i64,
-    flavor: i64,
-    texture: i64,
-    calories: i64,
-}
-
 // Solve part1 and part2 at the same time
 pub fn parse(input: &str) -> (i64, i64) {
     let re = Regex::new(r" (-?\d+).* (-?\d+).* (-?\d+).* (-?\d+).* (-?\d+)").unwrap();
-    let r: Vec<Ingredient> = input
+    let r: [[i64; 5]; 4] = input
         .lines()
         .map(|line| {
             let caps = re.captures(line).unwrap();
-            Ingredient {
-                capacity: caps[1].parse().unwrap(),
-                durability: caps[2].parse().unwrap(),
-                flavor: caps[3].parse().unwrap(),
-                texture: caps[4].parse().unwrap(),
-                calories: caps[5].parse().unwrap(),
-            }
+            [
+                caps[1].parse().unwrap(),
+                caps[2].parse().unwrap(),
+                caps[3].parse().unwrap(),
+                caps[4].parse().unwrap(),
+                caps[5].parse().unwrap(),
+            ]
         })
-        .collect();
+        .collect::<Vec<_>>()
+        .try_into()
+        .unwrap();
 
     let mut max_score = 0;
     let mut max_score_500_calories = 0;
 
-    for i in 0..=100 {
-        for j in 0..=100 - i {
-            for k in 0..=100 - i - j {
-                let l = 100 - i - j - k;
-                let score = (i * r[0].capacity
-                    + j * r[1].capacity
-                    + k * r[2].capacity
-                    + l * r[3].capacity)
-                    .max(0)
-                    * (i * r[0].durability
-                        + j * r[1].durability
-                        + k * r[2].durability
-                        + l * r[3].durability)
-                        .max(0)
-                    * (i * r[0].flavor + j * r[1].flavor + k * r[2].flavor + l * r[3].flavor)
-                        .max(0)
-                    * (i * r[0].texture + j * r[1].texture + k * r[2].texture + l * r[3].texture)
-                        .max(0);
+    for i0 in 0..=100 {
+        for i1 in 0..=100 - i0 {
+            for i2 in 0..=100 - i0 - i1 {
+                let i3 = 100 - i0 - i1 - i2;
+                let score = (i0 * r[0][0] + i1 * r[1][0] + i2 * r[2][0] + i3 * r[3][0]).max(0)
+                    * (i0 * r[0][1] + i1 * r[1][1] + i2 * r[2][1] + i3 * r[3][1]).max(0)
+                    * (i0 * r[0][2] + i1 * r[1][2] + i2 * r[2][2] + i3 * r[3][2]).max(0)
+                    * (i0 * r[0][3] + i1 * r[1][3] + i2 * r[2][3] + i3 * r[3][3]).max(0);
 
                 max_score = max_score.max(score);
-                if i * r[0].calories + j * r[1].calories + k * r[2].calories + l * r[3].calories
-                    == 500
-                {
+                if i0 * r[0][4] + i1 * r[1][4] + i2 * r[2][4] + i3 * r[3][4] == 500 {
                     max_score_500_calories = max_score_500_calories.max(score);
                 }
             }
         }
     }
+
     (max_score, max_score_500_calories)
 }
 
