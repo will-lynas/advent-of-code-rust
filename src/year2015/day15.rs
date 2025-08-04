@@ -1,9 +1,9 @@
 use regex::Regex;
 
 // Solve part1 and part2 at the same time
-pub fn parse(input: &str) -> (i64, i64) {
+pub fn parse(input: &str) -> (i32, i32) {
     let re = Regex::new(r" (-?\d+).* (-?\d+).* (-?\d+).* (-?\d+).* (-?\d+)").unwrap();
-    let r: [[i64; 5]; 4] = input
+    let r: [[i32; 5]; 4] = input
         .lines()
         .map(|line| {
             let caps = re.captures(line).unwrap();
@@ -42,10 +42,10 @@ pub fn parse(input: &str) -> (i64, i64) {
     (max_score, max_score_500_calories)
 }
 
-pub fn part1(&(ans, _): &(i64, i64)) -> i64 {
+pub fn part1(&(ans, _): &(i32, i32)) -> i32 {
     ans
 }
 
-pub fn part2(&(_, ans): &(i64, i64)) -> i64 {
+pub fn part2(&(_, ans): &(i32, i32)) -> i32 {
     ans
 }
