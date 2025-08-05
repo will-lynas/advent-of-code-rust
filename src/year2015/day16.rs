@@ -43,6 +43,15 @@ pub fn part1((tape, sues): &(Stat, Vec<Stat>)) -> usize {
         + 1
 }
 
-pub fn part2(input: &(Stat, Vec<Stat>)) -> usize {
-    input.1.len()
+pub fn part2((tape, sues): &(Stat, Vec<Stat>)) -> usize {
+    sues.iter()
+        .position(|s| {
+            tape.iter().all(|(k, v)| match k.as_str() {
+                "cats" | "trees" => s.get(k).is_none_or(|s| s > v),
+                "pomeranians" | "goldfish" => s.get(k).is_none_or(|s| s < v),
+                _ => s.get(k).is_none_or(|s| s == v),
+            })
+        })
+        .unwrap()
+        + 1
 }
