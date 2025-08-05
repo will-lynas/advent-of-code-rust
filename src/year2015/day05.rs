@@ -36,13 +36,6 @@ pub fn part2(input: &Input) -> usize {
             }
             false
         })
-        .filter(|s| {
-            for (a, _, c) in s.chars().tuple_windows() {
-                if a == c {
-                    return true;
-                }
-            }
-            false
-        })
+        .filter(|s| s.chars().tuple_windows().any(|(a, _, c)| a == c))
         .count()
 }
