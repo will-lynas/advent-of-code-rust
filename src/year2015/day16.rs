@@ -38,12 +38,7 @@ pub fn parse(input: &str) -> (Stat, Vec<Stat>) {
 
 pub fn part1((tape, sues): &(Stat, Vec<Stat>)) -> usize {
     sues.iter()
-        .enumerate()
-        .find_map(|(i, s)| {
-            tape.iter()
-                .all(|(k, v)| s.get(k).is_none_or(|s| s == v))
-                .then_some(i)
-        })
+        .position(|s| tape.iter().all(|(k, v)| s.get(k).is_none_or(|s| s == v)))
         .unwrap()
         + 1
 }
