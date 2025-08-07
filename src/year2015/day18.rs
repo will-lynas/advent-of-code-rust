@@ -98,6 +98,7 @@ pub fn part2(grid: &Input) -> usize {
             };
             new_grid[point] = new_cell;
         }
+
         new_grid[(0, 0)] = CellState::On;
         new_grid[(0, n - 1)] = CellState::On;
         new_grid[(n - 1, 0)] = CellState::On;
