@@ -1,15 +1,17 @@
 use advent_of_code::year2015::day25 as solution;
 
-const EXAMPLE: &str = "Hello, World!";
-
 #[test]
 fn part1() {
-    let input = solution::parse(EXAMPLE);
-    assert_eq!(solution::part1(&input), 13);
+    let example = "To continue, please consult the code grid in the manual.  \
+Enter the code at row 1, column 1.";
+    let input = solution::parse(example);
+    assert_eq!(solution::part1(&input), 20151125);
+
+    let example = "To continue, please consult the code grid in the manual.  \
+Enter the code at row 4, column 3.";
+    let input = solution::parse(example);
+    assert_eq!(solution::part1(&input), 21345942);
 }
 
 #[test]
-fn part2() {
-    let input = solution::parse(EXAMPLE);
-    assert_eq!(solution::part2(&input), 13);
-}
+fn part2() {}
