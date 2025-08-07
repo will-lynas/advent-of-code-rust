@@ -86,6 +86,14 @@ impl<T> Grid<T> {
             .collect()
     }
 
+    pub fn neighbors(&self, point: Point) -> Vec<Point> {
+        point
+            .neighbors()
+            .into_iter()
+            .filter(|point| self.contains(*point))
+            .collect()
+    }
+
     pub fn zero_grid(&self) -> Grid<usize> {
         Grid {
             width: self.width,
@@ -125,6 +133,20 @@ impl<T> Index<Point> for Grid<T> {
 impl<T> IndexMut<Point> for Grid<T> {
     fn index_mut(&mut self, point: Point) -> &mut Self::Output {
         &mut self.body[(self.width * point.y + point.x) as usize]
+    }
+}
+
+impl<T> Index<(usize, usize)> for Grid<T> {
+    type Output = T;
+
+    fn index(&self, (x, y): (usize, usize)) -> &Self::Output {
+        &self.body[self.width as usize * y + x]
+    }
+}
+
+impl<T> IndexMut<(usize, usize)> for Grid<T> {
+    fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut Self::Output {
+        &mut self.body[self.width as usize * y + x]
     }
 }
 

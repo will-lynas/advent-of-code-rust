@@ -60,6 +60,10 @@ impl Point {
             .collect()
     }
 
+    pub fn neighbors(&self) -> Vec<Self> {
+        Self::DIRS.iter().map(move |&dir| *self + dir).collect()
+    }
+
     #[must_use]
     pub fn normalized(&self) -> Self {
         if self == &Self::ORIGIN {
