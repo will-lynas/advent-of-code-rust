@@ -62,6 +62,50 @@ pub fn part1(grid: &Input) -> usize {
         .count()
 }
 
-pub fn part2(_grid: &Input) -> usize {
-    0
+pub fn part2(grid: &Input) -> usize {
+    let n = grid.width as usize;
+    let mut grid = grid.clone();
+
+    grid[(0, 0)] = CellState::On;
+    grid[(0, n - 1)] = CellState::On;
+    grid[(n - 1, 0)] = CellState::On;
+    grid[(n - 1, n - 1)] = CellState::On;
+
+    for _ in 0..100 {
+        let mut new_grid = grid.clone();
+        for (point, cell) in &grid {
+            let count = grid
+                .neighbors(point)
+                .iter()
+                .map(|&point| grid[point])
+                .filter(|&cell| cell == CellState::On)
+                .count();
+            let new_cell = match cell {
+                CellState::On => {
+                    if count == 2 || count == 3 {
+                        CellState::On
+                    } else {
+                        CellState::Off
+                    }
+                }
+                CellState::Off => {
+                    if count == 3 {
+                        CellState::On
+                    } else {
+                        CellState::Off
+                    }
+                }
+            };
+            new_grid[point] = new_cell;
+        }
+        new_grid[(0, 0)] = CellState::On;
+        new_grid[(0, n - 1)] = CellState::On;
+        new_grid[(n - 1, 0)] = CellState::On;
+        new_grid[(n - 1, n - 1)] = CellState::On;
+        grid = new_grid;
+    }
+
+    grid.iter()
+        .filter(|&(_, &cell)| cell == CellState::On)
+        .count()
 }
