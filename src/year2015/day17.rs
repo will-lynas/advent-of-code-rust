@@ -1,3 +1,9 @@
+use gxhash::{
+    HashMap,
+    HashMapExt,
+};
+use num::Integer;
+
 pub fn parse(input: &str) -> Vec<usize> {
     input.lines().map(|line| line.parse().unwrap()).collect()
 }
@@ -18,6 +24,21 @@ pub fn part1(containers: &[usize]) -> usize {
     count
 }
 
-pub fn part2(input: &[usize]) -> usize {
-    input.len()
+pub fn part2(containers: &[usize]) -> usize {
+    let mut counts: HashMap<usize, usize> = HashMap::new();
+    for mask in 0..(1 << containers.len()) {
+        let mut sum = 0;
+        let mut n = 0;
+        for (i, container) in containers.iter().enumerate() {
+            if mask & (1 << i) != 0 {
+                sum += container;
+                n += 1;
+            }
+        }
+        if sum == 150 {
+            counts.entry(n).or_insert(0).inc();
+        }
+    }
+    let min = counts.keys().min().unwrap();
+    counts[min]
 }
