@@ -4,7 +4,7 @@ pub fn parse(input: &str) -> Vec<usize> {
 }
 
 pub fn solve(containers: &[usize]) -> Vec<usize> {
-    let mut counts: Vec<usize> = vec![0; containers.len()];
+    let mut counts: Vec<usize> = vec![0; containers.len() + 1];
     for mask in 0..(1 << containers.len()) {
         let mut sum = 0;
         let mut n = 0;
