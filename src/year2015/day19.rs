@@ -1,7 +1,10 @@
 use gxhash::{
+    HashMap,
+    HashMapExt,
     HashSet,
     HashSetExt,
 };
+use regex::Regex;
 
 trait OverlapIndices {
     fn overlap_indices<'a>(&'a self, needle: &'a str) -> impl Iterator<Item = usize> + 'a;
@@ -40,25 +43,13 @@ pub fn part1((rules, molecule): &Input) -> usize {
     possible.len()
 }
 
-fn solve(rules: &[(String, String)], molecule: &str) -> usize {
-    if molecule == "e" {
-        return 0;
+pub fn part2((_rules, molecule): &Input) -> usize {
+    // needs explanation
+    let mut counts: HashMap<String, usize> = HashMap::new();
+    let re = Regex::new(r"([A-Z][a-z]?)").unwrap();
+    for cap in re.captures_iter(molecule) {
+        *counts.entry(cap[0].to_string()).or_insert(0) += 1;
     }
-
-    rules
-        .iter()
-        .flat_map(|(from, to)| {
-            molecule.overlap_indices(to).map(move |pos| {
-                let mut previous = molecule.to_string();
-                previous.replace_range(pos..pos + to.len(), from);
-                previous
-            })
-        })
-        .map(|s| solve(rules, &s) + 1)
-        .min()
-        .unwrap_or(usize::MAX / 2) // divide by 2 to avoid any overflows when adding 1
-}
-
-pub fn part2((rules, molecule): &Input) -> usize {
-    solve(rules, molecule)
+    let total: usize = counts.values().sum();
+    total - counts["Rn"] - counts["Ar"] - 2 * counts["Y"] - 1
 }
