@@ -6,37 +6,45 @@ use gxhash::{
 };
 use regex::Regex;
 
-trait OverlapIndices {
-    fn overlap_indices<'a>(&'a self, needle: &'a str) -> impl Iterator<Item = usize> + 'a;
-}
-
-impl OverlapIndices for str {
-    fn overlap_indices<'a>(&'a self, needle: &'a str) -> impl Iterator<Item = usize> + 'a {
-        (0..=self.len().saturating_sub(needle.len()))
-            .filter(move |&i| self[i..].starts_with(needle))
-    }
-}
-
-type Input = (Vec<(String, String)>, String);
+type Input = (Vec<(String, Vec<String>)>, Vec<String>);
 
 pub fn parse(input: &str) -> Input {
     let (rules, molecule) = input.split_once("\n\n").unwrap();
+
+    let re = Regex::new(r"([A-Z][a-z]?)").unwrap();
+
     let rules: Vec<_> = rules
         .lines()
         .map(|line| {
             let (from, to) = line.split_once(" => ").unwrap();
-            (from.to_string(), to.to_string())
+            let to = re.captures_iter(to).map(|cap| cap[0].to_string()).collect();
+            (from.to_string(), to)
         })
         .collect();
-    (rules, molecule.to_string())
+
+    let molecule = re
+        .captures_iter(molecule)
+        .map(|cap| cap[0].to_string())
+        .collect();
+
+    (rules, molecule)
 }
 
 pub fn part1((rules, molecule): &Input) -> usize {
-    let mut possible: HashSet<String> = HashSet::new();
+    let mut possible: HashSet<Vec<String>> = HashSet::new();
     for (from, to) in rules {
-        for pos in molecule.overlap_indices(from) {
-            let mut new = molecule.to_string();
-            new.replace_range(pos..pos + from.len(), to);
+        for pos in molecule
+            .iter()
+            .enumerate()
+            .filter_map(|(i, s)| if s == from { Some(i) } else { None })
+        {
+            let new = molecule
+                .iter()
+                .take(pos)
+                .chain(to.iter())
+                .chain(molecule.iter().skip(pos + 1))
+                .cloned()
+                .collect();
             possible.insert(new);
         }
     }
@@ -45,10 +53,9 @@ pub fn part1((rules, molecule): &Input) -> usize {
 
 pub fn part2((_rules, molecule): &Input) -> usize {
     // needs explanation
-    let mut counts: HashMap<String, usize> = HashMap::new();
-    let re = Regex::new(r"([A-Z][a-z]?)").unwrap();
-    for cap in re.captures_iter(molecule) {
-        *counts.entry(cap[0].to_string()).or_insert(0) += 1;
+    let mut counts: HashMap<&str, usize> = HashMap::new();
+    for s in molecule {
+        *counts.entry(s).or_insert(0) += 1;
     }
     let total: usize = counts.values().sum();
     total - counts["Rn"] - counts["Ar"] - 2 * counts["Y"] - 1
