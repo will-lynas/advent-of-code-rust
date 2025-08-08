@@ -40,6 +40,25 @@ pub fn part1((rules, molecule): &Input) -> usize {
     possible.len()
 }
 
-pub fn part2((_rules, _molecule): &Input) -> usize {
-    0
+fn solve(rules: &[(String, String)], molecule: &str) -> usize {
+    if molecule == "e" {
+        return 0;
+    }
+
+    rules
+        .iter()
+        .flat_map(|(from, to)| {
+            molecule.overlap_indices(to).map(move |pos| {
+                let mut previous = molecule.to_string();
+                previous.replace_range(pos..pos + to.len(), from);
+                previous
+            })
+        })
+        .map(|s| solve(rules, &s) + 1)
+        .min()
+        .unwrap_or(usize::MAX / 2) // divide by 2 to avoid any overflows when adding 1
+}
+
+pub fn part2((rules, molecule): &Input) -> usize {
+    solve(rules, molecule)
 }
