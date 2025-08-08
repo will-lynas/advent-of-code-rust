@@ -1,20 +1,27 @@
 use advent_of_code::year2015::day19 as solution;
 
-const EXAMPLE: &str = "\
+#[test]
+fn part1() {
+    let example = "\
 H => HO
 H => OH
 O => HH
 
 HOH";
-
-#[test]
-fn part1() {
-    let input = solution::parse(EXAMPLE);
+    let input = solution::parse(example);
     assert_eq!(solution::part1(&input), 4);
 }
 
 #[test]
 fn part2() {
-    let input = solution::parse(EXAMPLE);
+    let example = "\
+e => H
+e => O
+H => HO
+H => OH
+O => HH
+
+HOH";
+    let input = solution::parse(example);
     assert_eq!(solution::part2(&input), 3);
 }
