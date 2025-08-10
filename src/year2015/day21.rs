@@ -1,13 +1,130 @@
-type Input = String;
+use regex::Regex;
 
-pub fn parse(input: &str) -> Input {
-    input.into()
+pub struct Player {
+    hit_points: usize,
+    damage: usize,
+    armor: usize,
 }
 
-pub fn part1(input: &Input) -> usize {
-    input.len()
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Item {
+    cost: usize,
+    damage: usize,
+    armor: usize,
 }
 
-pub fn part2(input: &Input) -> usize {
-    input.len()
+impl Item {
+    const fn new(cost: usize, damage: usize, armor: usize) -> Self {
+        Self {
+            cost,
+            damage,
+            armor,
+        }
+    }
+}
+
+pub struct Items {
+    weapons: [Item; 5],
+    armor: [Item; 6],
+    rings: [Item; 7],
+}
+
+const ITEMS: Items = {
+    let weapons = [
+        Item::new(8, 4, 0),
+        Item::new(10, 5, 0),
+        Item::new(25, 6, 0),
+        Item::new(40, 7, 0),
+        Item::new(74, 8, 0),
+    ];
+    let armor = [
+        Item::new(0, 0, 0), // Sentinel - no armor
+        Item::new(13, 0, 1),
+        Item::new(31, 0, 2),
+        Item::new(53, 0, 3),
+        Item::new(75, 0, 4),
+        Item::new(102, 0, 5),
+    ];
+    let rings = [
+        Item::new(0, 0, 0), // Sentinel - no ring
+        Item::new(25, 1, 0),
+        Item::new(50, 2, 0),
+        Item::new(100, 3, 0),
+        Item::new(20, 0, 1),
+        Item::new(40, 0, 2),
+        Item::new(80, 0, 3),
+    ];
+
+    Items {
+        weapons,
+        armor,
+        rings,
+    }
+};
+
+pub fn parse(input: &str) -> Player {
+    let re = Regex::new(r"^Hit Points: (\d+)\nDamage: (\d+)\nArmor: (\d+)$").unwrap();
+    let caps = re.captures(input).unwrap();
+    Player {
+        hit_points: caps[1].parse().unwrap(),
+        damage: caps[2].parse().unwrap(),
+        armor: caps[3].parse().unwrap(),
+    }
+}
+
+pub fn player_wins(player: &Player, boss: &Player) -> bool {
+    let player_damage = player.damage.saturating_sub(boss.armor).max(1);
+    let boss_damage = boss.damage.saturating_sub(player.armor).max(1);
+    let player_turns = boss.hit_points.div_ceil(player_damage);
+    let boss_turns = player.hit_points.div_ceil(boss_damage);
+    player_turns <= boss_turns
+}
+
+pub fn part1(boss: &Player) -> usize {
+    let mut min_cost = usize::MAX;
+    for weapon in ITEMS.weapons {
+        for armor in ITEMS.armor {
+            for ring1 in ITEMS.rings {
+                for ring2 in ITEMS.rings {
+                    if ring1 == ring2 && ring1 != ITEMS.rings[0] {
+                        continue;
+                    }
+                    let player = Player {
+                        hit_points: 100,
+                        damage: weapon.damage + ring1.damage + ring2.damage,
+                        armor: armor.armor + ring1.armor + ring2.armor,
+                    };
+                    if player_wins(&player, boss) {
+                        let cost = weapon.cost + armor.cost + ring1.cost + ring2.cost;
+                        min_cost = min_cost.min(cost);
+                    }
+                }
+            }
+        }
+    }
+    min_cost
+}
+
+pub fn part2(boss: &Player) -> usize {
+    boss.hit_points
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_player_wins() {
+        let player = Player {
+            hit_points: 8,
+            damage: 5,
+            armor: 5,
+        };
+        let boss = Player {
+            hit_points: 12,
+            damage: 7,
+            armor: 2,
+        };
+        assert!(player_wins(&player, &boss));
+    }
 }
