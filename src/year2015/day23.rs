@@ -88,9 +88,9 @@ pub fn parse(input: &str) -> Vec<Instruction> {
 }
 
 fn run(instructions: &[Instruction], registers: &mut RegisterManager) {
-    let n = instructions.len();
+    let n = instructions.len() as i32;
     let mut pc = 0i32;
-    while 0 <= pc && pc < n as i32 {
+    while 0 <= pc && pc < n {
         let mut offset = 1;
         match instructions[pc as usize] {
             Instruction::Hlf(register) => {
