@@ -72,8 +72,9 @@ pub fn part1(input: &[Instruction]) -> usize {
             }
         }
     }
-    grid.iter()
-        .filter(|&(_, &state)| state == State::On)
+    grid.body
+        .iter()
+        .filter(|&&state| state == State::On)
         .count()
 }
 
@@ -92,5 +93,5 @@ pub fn part2(input: &[Instruction]) -> i32 {
             }
         }
     }
-    grid.iter().map(|(_, &brightness)| brightness).sum()
+    grid.body.iter().sum()
 }
