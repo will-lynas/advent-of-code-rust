@@ -1,7 +1,7 @@
 use std::{
     fmt::{
         self,
-        Debug,
+        Display,
         Formatter,
     },
     ops::{
@@ -45,7 +45,7 @@ impl Grid<u8> {
     }
 }
 
-impl Debug for Grid<u8> {
+impl Display for Grid<u8> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         for y in 0..self.height {
             for x in 0..self.width {
