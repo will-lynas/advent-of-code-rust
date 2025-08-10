@@ -27,7 +27,9 @@ impl FromStr for Grid<u8> {
         let height = bytes.len() as i32;
         let width = bytes[0].len() as i32;
         let mut body = Vec::with_capacity((width * height) as usize);
-        bytes.iter().for_each(|slice| body.extend_from_slice(slice));
+        for slice in bytes {
+            body.extend_from_slice(slice);
+        }
         Ok(Grid {
             width,
             height,
