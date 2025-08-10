@@ -91,35 +91,30 @@ fn run(instructions: &[Instruction], registers: &mut RegisterManager) {
     let n = instructions.len();
     let mut pc = 0i32;
     while 0 <= pc && pc < n as i32 {
+        let mut offset = 1;
         match instructions[pc as usize] {
             Instruction::Hlf(register) => {
                 registers[register] /= 2;
-                pc += 1;
             }
             Instruction::Tpl(register) => {
                 registers[register] *= 3;
-                pc += 1;
             }
             Instruction::Inc(register) => {
                 registers[register] += 1;
-                pc += 1;
             }
-            Instruction::Jmp(offset) => pc += offset,
-            Instruction::Jie(register, offset) => {
+            Instruction::Jmp(next_offset) => offset = next_offset,
+            Instruction::Jie(register, next_offset) => {
                 if registers[register] % 2 == 0 {
-                    pc += offset;
-                } else {
-                    pc += 1;
+                    offset = next_offset;
                 }
             }
-            Instruction::Jio(register, offset) => {
+            Instruction::Jio(register, next_offset) => {
                 if registers[register] == 1 {
-                    pc += offset;
-                } else {
-                    pc += 1;
+                    offset = next_offset;
                 }
             }
         }
+        pc += offset;
     }
 }
 
