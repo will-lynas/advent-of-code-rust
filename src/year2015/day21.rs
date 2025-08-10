@@ -62,14 +62,42 @@ const ITEMS: Items = {
     }
 };
 
-pub fn parse(input: &str) -> Player {
+pub fn parse(input: &str) -> (usize, usize) {
     let re = Regex::new(r"^Hit Points: (\d+)\nDamage: (\d+)\nArmor: (\d+)$").unwrap();
     let caps = re.captures(input).unwrap();
-    Player {
+    let boss = Player {
         hit_points: caps[1].parse().unwrap(),
         damage: caps[2].parse().unwrap(),
         armor: caps[3].parse().unwrap(),
+    };
+
+    let mut min_cost = usize::MAX;
+    let mut max_cost = 0;
+
+    for weapon in ITEMS.weapons {
+        for armor in ITEMS.armor {
+            for ring1 in ITEMS.rings {
+                for ring2 in ITEMS.rings {
+                    // Can't be the same but can both be the sentinel
+                    if ring1 == ring2 && ring1 != ITEMS.rings[0] {
+                        continue;
+                    }
+                    let player = Player {
+                        hit_points: 100,
+                        damage: weapon.damage + ring1.damage + ring2.damage,
+                        armor: armor.armor + ring1.armor + ring2.armor,
+                    };
+                    let cost = weapon.cost + armor.cost + ring1.cost + ring2.cost;
+                    if player_wins(&player, &boss) {
+                        min_cost = min_cost.min(cost);
+                    } else {
+                        max_cost = max_cost.max(cost);
+                    }
+                }
+            }
+        }
     }
+    (min_cost, max_cost)
 }
 
 pub fn player_wins(player: &Player, boss: &Player) -> bool {
@@ -80,53 +108,11 @@ pub fn player_wins(player: &Player, boss: &Player) -> bool {
     player_turns <= boss_turns
 }
 
-pub fn part1(boss: &Player) -> usize {
-    let mut min_cost = usize::MAX;
-    for weapon in ITEMS.weapons {
-        for armor in ITEMS.armor {
-            for ring1 in ITEMS.rings {
-                for ring2 in ITEMS.rings {
-                    if ring1 == ring2 && ring1 != ITEMS.rings[0] {
-                        continue;
-                    }
-                    let player = Player {
-                        hit_points: 100,
-                        damage: weapon.damage + ring1.damage + ring2.damage,
-                        armor: armor.armor + ring1.armor + ring2.armor,
-                    };
-                    if player_wins(&player, boss) {
-                        let cost = weapon.cost + armor.cost + ring1.cost + ring2.cost;
-                        min_cost = min_cost.min(cost);
-                    }
-                }
-            }
-        }
-    }
+pub fn part1(&(min_cost, _): &(usize, usize)) -> usize {
     min_cost
 }
 
-pub fn part2(boss: &Player) -> usize {
-    let mut max_cost = 0;
-    for weapon in ITEMS.weapons {
-        for armor in ITEMS.armor {
-            for ring1 in ITEMS.rings {
-                for ring2 in ITEMS.rings {
-                    if ring1 == ring2 && ring1 != ITEMS.rings[0] {
-                        continue;
-                    }
-                    let player = Player {
-                        hit_points: 100,
-                        damage: weapon.damage + ring1.damage + ring2.damage,
-                        armor: armor.armor + ring1.armor + ring2.armor,
-                    };
-                    if !player_wins(&player, boss) {
-                        let cost = weapon.cost + armor.cost + ring1.cost + ring2.cost;
-                        max_cost = max_cost.max(cost);
-                    }
-                }
-            }
-        }
-    }
+pub fn part2(&(_, max_cost): &(usize, usize)) -> usize {
     max_cost
 }
 
