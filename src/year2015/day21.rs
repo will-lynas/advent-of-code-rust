@@ -110,6 +110,7 @@ pub fn parse(input: &str) -> (usize, usize) {
             }
         }
     }
+
     (min_cost, max_cost)
 }
 
