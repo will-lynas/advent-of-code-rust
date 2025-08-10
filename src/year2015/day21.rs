@@ -78,12 +78,8 @@ pub fn parse(input: &str) -> (usize, usize) {
         for armor in ITEMS.armor {
             for ring1 in ITEMS.rings {
                 for ring2 in ITEMS.rings {
-                    if let Some(ring1) = ring1 {
-                        if let Some(ring2) = ring2 {
-                            if ring1 == ring2 {
-                                continue;
-                            }
-                        }
+                    if ring1.is_some() && ring1 == ring2 {
+                        continue;
                     }
 
                     let player = Player {
