@@ -60,7 +60,7 @@ impl Display for Grid<u8> {
 }
 
 impl<T> Grid<T> {
-    pub fn iter(&self) -> GridIter<T> {
+    pub fn iter(&'_ self) -> GridIter<'_, T> {
         <&Self as IntoIterator>::into_iter(self)
     }
 
