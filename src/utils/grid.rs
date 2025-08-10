@@ -68,14 +68,12 @@ impl<T> Grid<T> {
         Point::new(x, y)
     }
 
-    pub fn points(&self) -> Vec<Point> {
+    pub fn points(&self) -> impl Iterator<Item = Point> + '_ {
         self.inner_points(0)
     }
 
-    pub fn inner_points(&self, n: i32) -> Vec<Point> {
-        (n..self.height - n)
-            .flat_map(move |y| (n..self.width - n).map(move |x| Point::new(x, y)))
-            .collect()
+    pub fn inner_points(&self, n: i32) -> impl Iterator<Item = Point> + '_ {
+        (n..self.height - n).flat_map(move |y| (n..self.width - n).map(move |x| Point::new(x, y)))
     }
 
     pub fn orthogonals(&self, point: Point) -> Vec<Point> {

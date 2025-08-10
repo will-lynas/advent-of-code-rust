@@ -34,7 +34,6 @@ pub fn part1(grid: &Grid<u8>) -> i32 {
 
 pub fn part2(grid: &Grid<u8>) -> usize {
     grid.inner_points(1)
-        .into_iter()
         .filter(|&point| {
             grid[point] == b'A'
                 && ((grid[point + Point::UP_LEFT] == b'M'
