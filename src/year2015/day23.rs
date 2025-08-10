@@ -87,8 +87,7 @@ pub fn parse(input: &str) -> Vec<Instruction> {
         .collect()
 }
 
-pub fn part1(instructions: &[Instruction]) -> i32 {
-    let mut registers = RegisterManager::new();
+fn run(instructions: &[Instruction], registers: &mut RegisterManager) {
     let n = instructions.len();
     let mut pc = 0i32;
     while 0 <= pc && pc < n as i32 {
@@ -122,9 +121,17 @@ pub fn part1(instructions: &[Instruction]) -> i32 {
             }
         }
     }
+}
+
+pub fn part1(instructions: &[Instruction]) -> i32 {
+    let mut registers = RegisterManager::new();
+    run(instructions, &mut registers);
     registers[Register::B]
 }
 
-pub fn part2(input: &[Instruction]) -> usize {
-    input.len()
+pub fn part2(instructions: &[Instruction]) -> i32 {
+    let mut registers = RegisterManager::new();
+    registers[Register::A] = 1;
+    run(instructions, &mut registers);
+    registers[Register::B]
 }
