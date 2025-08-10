@@ -12,7 +12,7 @@ use crate::utils::{
 type Input = Vec<(usize, HashSet<Edge>)>;
 
 pub fn parse(input: &str) -> Input {
-    let grid = Grid::parse(input);
+    let grid: Grid<u8> = input.parse().unwrap();
     let mut out = Vec::new();
     let mut visited = HashSet::new();
     for point in grid.points() {

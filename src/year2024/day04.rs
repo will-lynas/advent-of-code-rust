@@ -4,7 +4,7 @@ use crate::utils::{
 };
 
 pub fn parse(input: &str) -> Grid<u8> {
-    Grid::parse(input)
+    input.parse().unwrap()
 }
 
 pub fn part1(grid: &Grid<u8>) -> i32 {

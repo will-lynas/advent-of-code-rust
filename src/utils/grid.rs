@@ -8,6 +8,7 @@ use std::{
         Index,
         IndexMut,
     },
+    str::FromStr,
 };
 
 use super::point::Point;
@@ -19,20 +20,23 @@ pub struct Grid<T> {
     pub body: Vec<T>,
 }
 
-impl Grid<u8> {
-    pub fn parse(input: &str) -> Self {
-        let bytes: Vec<_> = input.lines().map(str::as_bytes).collect();
+impl FromStr for Grid<u8> {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let bytes: Vec<_> = s.lines().map(str::as_bytes).collect();
         let height = bytes.len() as i32;
         let width = bytes[0].len() as i32;
         let mut body = Vec::with_capacity((width * height) as usize);
         bytes.iter().for_each(|slice| body.extend_from_slice(slice));
-        Grid {
+        Ok(Grid {
             width,
             height,
             body,
-        }
+        })
     }
+}
 
+impl Grid<u8> {
     #[must_use]
     pub fn with_points(&self, points: impl IntoIterator<Item = Point>) -> Self {
         let mut grid = self.clone();

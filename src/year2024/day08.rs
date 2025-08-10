@@ -13,7 +13,7 @@ use crate::utils::{
 type Input = (Grid<u8>, HashMap<u8, Vec<Point>>);
 
 pub fn parse(input: &str) -> Input {
-    let grid = Grid::parse(input);
+    let grid: Grid<u8> = input.parse().unwrap();
     let mut map = HashMap::new();
     grid.iter()
         .filter(|&(_, &c)| c != b'.')

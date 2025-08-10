@@ -13,7 +13,7 @@ use crate::utils::{
 type Input = Grid<u8>;
 
 pub fn parse(input: &str) -> Input {
-    Grid::parse(input)
+    input.parse().unwrap()
 }
 
 pub fn part1(grid: &Input) -> usize {
