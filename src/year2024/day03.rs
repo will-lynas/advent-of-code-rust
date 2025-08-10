@@ -22,7 +22,7 @@ pub fn part2(input: &str) -> i32 {
     for part in parts {
         if let Some((_, good_part)) = part.split_once("do()") {
             enable_parts.push(good_part);
-        };
+        }
     }
     enable_parts.iter().map(|part| part1(part)).sum()
 }
