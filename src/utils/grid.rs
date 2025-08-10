@@ -113,7 +113,7 @@ impl<T: Default + Clone> Grid<T> {
     }
 }
 
-impl<T: PartialEq + Copy> Grid<T> {
+impl<T: PartialEq> Grid<T> {
     pub fn find(&self, goal: &T) -> Option<Point> {
         self.body
             .iter()
