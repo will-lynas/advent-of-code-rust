@@ -25,8 +25,8 @@ impl Item {
 
 pub struct Items {
     weapons: [Item; 5],
-    armor: [Item; 6],
-    rings: [Item; 7],
+    armor: [Option<Item>; 6],
+    rings: [Option<Item>; 7],
 }
 
 const ITEMS: Items = {
@@ -38,21 +38,21 @@ const ITEMS: Items = {
         Item::new(74, 8, 0),
     ];
     let armor = [
-        Item::new(0, 0, 0), // Sentinel - no armor
-        Item::new(13, 0, 1),
-        Item::new(31, 0, 2),
-        Item::new(53, 0, 3),
-        Item::new(75, 0, 4),
-        Item::new(102, 0, 5),
+        None,
+        Some(Item::new(13, 0, 1)),
+        Some(Item::new(31, 0, 2)),
+        Some(Item::new(53, 0, 3)),
+        Some(Item::new(75, 0, 4)),
+        Some(Item::new(102, 0, 5)),
     ];
     let rings = [
-        Item::new(0, 0, 0), // Sentinel - no ring
-        Item::new(25, 1, 0),
-        Item::new(50, 2, 0),
-        Item::new(100, 3, 0),
-        Item::new(20, 0, 1),
-        Item::new(40, 0, 2),
-        Item::new(80, 0, 3),
+        None,
+        Some(Item::new(25, 1, 0)),
+        Some(Item::new(50, 2, 0)),
+        Some(Item::new(100, 3, 0)),
+        Some(Item::new(20, 0, 1)),
+        Some(Item::new(40, 0, 2)),
+        Some(Item::new(80, 0, 3)),
     ];
 
     Items {
@@ -78,16 +78,29 @@ pub fn parse(input: &str) -> (usize, usize) {
         for armor in ITEMS.armor {
             for ring1 in ITEMS.rings {
                 for ring2 in ITEMS.rings {
-                    // Can't be the same but can both be the sentinel
-                    if ring1 == ring2 && ring1 != ITEMS.rings[0] {
-                        continue;
+                    if let Some(ring1) = ring1 {
+                        if let Some(ring2) = ring2 {
+                            if ring1 == ring2 {
+                                continue;
+                            }
+                        }
                     }
+
                     let player = Player {
                         hit_points: 100,
-                        damage: weapon.damage + ring1.damage + ring2.damage,
-                        armor: armor.armor + ring1.armor + ring2.armor,
+                        damage: weapon.damage
+                            + ring1.map_or(0, |r| r.damage)
+                            + ring2.map_or(0, |r| r.damage),
+                        armor: armor.map_or(0, |r| r.armor)
+                            + ring1.map_or(0, |r| r.armor)
+                            + ring2.map_or(0, |r| r.armor),
                     };
-                    let cost = weapon.cost + armor.cost + ring1.cost + ring2.cost;
+
+                    let cost = weapon.cost
+                        + armor.map_or(0, |r| r.cost)
+                        + ring1.map_or(0, |r| r.cost)
+                        + ring2.map_or(0, |r| r.cost);
+
                     if player_wins(&player, &boss) {
                         min_cost = min_cost.min(cost);
                     } else {
