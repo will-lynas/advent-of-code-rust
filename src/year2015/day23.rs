@@ -1,8 +1,9 @@
-use std::str::FromStr;
-
-use gxhash::{
-    HashMap,
-    HashMapExt,
+use std::{
+    ops::{
+        Index,
+        IndexMut,
+    },
+    str::FromStr,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -19,6 +20,35 @@ impl FromStr for Register {
             "a" => Ok(Register::A),
             "b" => Ok(Register::B),
             _ => Err(()),
+        }
+    }
+}
+
+struct RegisterManager {
+    data: [i32; 2],
+}
+
+impl RegisterManager {
+    fn new() -> Self {
+        Self { data: [0, 0] }
+    }
+}
+
+impl Index<Register> for RegisterManager {
+    type Output = i32;
+    fn index(&self, index: Register) -> &Self::Output {
+        match index {
+            Register::A => &self.data[0],
+            Register::B => &self.data[1],
+        }
+    }
+}
+
+impl IndexMut<Register> for RegisterManager {
+    fn index_mut(&mut self, index: Register) -> &mut Self::Output {
+        match index {
+            Register::A => &mut self.data[0],
+            Register::B => &mut self.data[1],
         }
     }
 }
@@ -58,33 +88,33 @@ pub fn parse(input: &str) -> Vec<Instruction> {
 }
 
 pub fn part1(instructions: &[Instruction]) -> i32 {
-    let mut registers: HashMap<Register, i32> = HashMap::new();
+    let mut registers = RegisterManager::new();
     let n = instructions.len();
     let mut pc = 0i32;
     while 0 <= pc && pc < n as i32 {
         match instructions[pc as usize] {
             Instruction::Hlf(register) => {
-                *registers.entry(register).or_insert(0) /= 2;
+                registers[register] /= 2;
                 pc += 1;
             }
             Instruction::Tpl(register) => {
-                *registers.entry(register).or_insert(0) *= 3;
+                registers[register] *= 3;
                 pc += 1;
             }
             Instruction::Inc(register) => {
-                *registers.entry(register).or_insert(0) += 1;
+                registers[register] += 1;
                 pc += 1;
             }
             Instruction::Jmp(offset) => pc += offset,
             Instruction::Jie(register, offset) => {
-                if registers.get(&register).unwrap_or(&0) % 2 == 0 {
+                if registers[register] % 2 == 0 {
                     pc += offset;
                 } else {
                     pc += 1;
                 }
             }
             Instruction::Jio(register, offset) => {
-                if *registers.get(&register).unwrap_or(&0) == 1 {
+                if registers[register] == 1 {
                     pc += offset;
                 } else {
                     pc += 1;
@@ -92,7 +122,7 @@ pub fn part1(instructions: &[Instruction]) -> i32 {
             }
         }
     }
-    registers[&Register::B]
+    registers[Register::B]
 }
 
 pub fn part2(input: &[Instruction]) -> usize {
