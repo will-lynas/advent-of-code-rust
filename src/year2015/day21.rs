@@ -106,7 +106,28 @@ pub fn part1(boss: &Player) -> usize {
 }
 
 pub fn part2(boss: &Player) -> usize {
-    boss.hit_points
+    let mut max_cost = 0;
+    for weapon in ITEMS.weapons {
+        for armor in ITEMS.armor {
+            for ring1 in ITEMS.rings {
+                for ring2 in ITEMS.rings {
+                    if ring1 == ring2 && ring1 != ITEMS.rings[0] {
+                        continue;
+                    }
+                    let player = Player {
+                        hit_points: 100,
+                        damage: weapon.damage + ring1.damage + ring2.damage,
+                        armor: armor.armor + ring1.armor + ring2.armor,
+                    };
+                    if !player_wins(&player, boss) {
+                        let cost = weapon.cost + armor.cost + ring1.cost + ring2.cost;
+                        max_cost = max_cost.max(cost);
+                    }
+                }
+            }
+        }
+    }
+    max_cost
 }
 
 #[cfg(test)]
