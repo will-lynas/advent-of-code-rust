@@ -33,9 +33,4 @@ The examples given in the text of each problem are used in tests.
 - Specific day: `cargo bench year2024/day04`
 - Specific part: `cargo bench year2024/day04/part2`
 
-## Acknowledgments
-
-Thank you to ...
-
-- [maneatingape/advent-of-code-rust](https://github.com/maneatingape/advent-of-code-rust) for the structure of this repo, and for large parts of the solutions
-- [Neil Thistlethwaite](https://www.youtube.com/@nthistlethwaite) for his amazing live Advent of Code solutions on YouTube
+Thank you to [maneatingape/advent-of-code-rust](https://github.com/maneatingape/advent-of-code-rust) for the structure of this repo.
