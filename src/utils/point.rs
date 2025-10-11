@@ -53,6 +53,16 @@ impl Point {
         (self.x, self.y) = (-self.y, self.x);
     }
 
+    #[must_use]
+    pub fn rotated_clockwise(&self) -> Self {
+        Self::new(-self.y, self.x)
+    }
+
+    #[must_use]
+    pub fn rotated_anticlockwise(&self) -> Self {
+        Self::new(self.y, -self.x)
+    }
+
     pub fn orthogonals(&self) -> Vec<Self> {
         Self::ORTHOGONALS
             .iter()
