@@ -7,11 +7,11 @@ enum Action {
     Right,
 }
 
-impl Action {
-    fn parse(c: char) -> Self {
-        match c {
-            'R' => Self::Right,
-            'L' => Self::Left,
+impl From<&str> for Action {
+    fn from(s: &str) -> Self {
+        match s {
+            "L" => Self::Left,
+            "R" => Self::Right,
             _ => unreachable!(),
         }
     }
@@ -22,16 +22,17 @@ pub struct Instruction {
     distance: i32,
 }
 
-impl Instruction {
-    fn parse(txt: &str) -> Self {
-        let action = Action::parse(txt.chars().next().unwrap());
-        let distance: i32 = txt[1..].parse().unwrap();
-        Self { action, distance }
+impl From<&str> for Instruction {
+    fn from(txt: &str) -> Self {
+        Self {
+            action: txt[0..1].into(),
+            distance: txt[1..].parse().unwrap(),
+        }
     }
 }
 
 pub fn parse(input: &str) -> Input {
-    input.split(", ").map(Instruction::parse).collect()
+    input.split(", ").map(Instruction::from).collect()
 }
 
 pub fn part1(input: &Input) -> i32 {
