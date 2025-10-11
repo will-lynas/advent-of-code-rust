@@ -4,6 +4,7 @@ use gxhash::{
 };
 
 use crate::utils::{
+    direction::Direction,
     grid::Grid,
     point::Point,
     threading::run_threads,
@@ -20,7 +21,7 @@ pub fn part1(grid: &Grid<u8>) -> usize {
     let mut visited = HashSet::new();
     while grid.contains(pos + dir) {
         if grid[pos + dir] == b'#' {
-            dir.rotate_clockwise();
+            dir.rotate(Direction::Clockwise);
             continue;
         }
         visited.insert(pos);
@@ -39,7 +40,7 @@ pub fn part2(grid: &Grid<u8>) -> usize {
     let mut visited = HashSet::new();
     while grid.contains(pos + dir) {
         if grid[pos + dir] == b'#' {
-            dir.rotate_clockwise();
+            dir.rotate(Direction::Clockwise);
             continue;
         }
         visited.insert(pos);
@@ -60,7 +61,7 @@ pub fn part2(grid: &Grid<u8>) -> usize {
             let mut visited = HashSet::new();
             while grid.contains(pos + dir) {
                 if grid[pos + dir] == b'#' {
-                    dir.rotate_clockwise();
+                    dir.rotate(Direction::Clockwise);
                     continue;
                 }
                 if !visited.insert((pos, dir)) {

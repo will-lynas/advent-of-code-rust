@@ -51,8 +51,11 @@ impl Point {
         Self { y, x }
     }
 
-    pub fn rotate_clockwise(&mut self) {
-        (self.x, self.y) = (-self.y, self.x);
+    pub fn rotate(&mut self, direction: Direction) {
+        match direction {
+            Direction::Clockwise => (self.x, self.y) = (-self.y, self.x),
+            Direction::Anticlockwise => (self.x, self.y) = (self.y, -self.x),
+        }
     }
 
     #[must_use]
