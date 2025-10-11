@@ -14,6 +14,8 @@ use std::{
 
 use num::integer::gcd;
 
+use super::direction::Direction;
+
 #[derive(PartialOrd, Ord, Hash, Copy, Clone, Eq, PartialEq)]
 pub struct Point {
     pub y: i32,
@@ -54,13 +56,11 @@ impl Point {
     }
 
     #[must_use]
-    pub fn rotated_clockwise(&self) -> Self {
-        Self::new(-self.y, self.x)
-    }
-
-    #[must_use]
-    pub fn rotated_anticlockwise(&self) -> Self {
-        Self::new(self.y, -self.x)
+    pub fn rotated(&self, direction: Direction) -> Self {
+        match direction {
+            Direction::Clockwise => Self::new(-self.y, self.x),
+            Direction::Anticlockwise => Self::new(self.y, -self.x),
+        }
     }
 
     pub fn orthogonals(&self) -> Vec<Self> {

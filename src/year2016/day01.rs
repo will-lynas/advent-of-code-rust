@@ -1,4 +1,7 @@
-use crate::utils::point::Point;
+use crate::utils::{
+    direction::Direction,
+    point::Point,
+};
 
 type Input = Vec<Instruction>;
 
@@ -40,8 +43,8 @@ pub fn part1(input: &Input) -> i32 {
         .iter()
         .fold((Point::ORIGIN, Point::UP), |(pos, dir), instruction| {
             let dir = match instruction.action {
-                Action::Left => dir.rotated_anticlockwise(),
-                Action::Right => dir.rotated_clockwise(),
+                Action::Left => dir.rotated(Direction::Anticlockwise),
+                Action::Right => dir.rotated(Direction::Clockwise),
             };
             (pos + dir * instruction.distance, dir)
         })
