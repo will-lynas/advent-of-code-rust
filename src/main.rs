@@ -37,6 +37,7 @@ fn main() {
         .chain(year2022())
         .chain(year2023())
         .chain(year2024())
+        .chain(year2025())
         .filter(|solution| args.year.clone().is_none_or(|y| y == solution.year))
         .filter(|solution| args.day.clone().is_none_or(|d| d == solution.day))
         .filter(|solution| args.year.is_some() || solution.year != "template_year")
@@ -169,4 +170,9 @@ run!(year2024
     day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
     day11, day12, day13, day14, day15, day16, day17, day18, day19, day20,
     day21, day22, day23, day24, day25
+);
+
+run!(year2025
+    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
+    day11, day12
 );

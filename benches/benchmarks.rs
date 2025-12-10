@@ -119,12 +119,17 @@ benchmark_year!(year2024 =>
     day21, day22, day23, day24, day25
 );
 
+benchmark_year!(year2025 =>
+    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
+    day11, day12
+);
+
 criterion_group!(
     name = benches;
     config = Criterion::default();
     targets = template_year,
         year2015, year2016, year2017, year2018, year2019, year2020,
-        year2021, year2022, year2023, year2024
+        year2021, year2022, year2023, year2024, year2025
 );
 
 criterion_main!(benches);
